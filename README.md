@@ -1,0 +1,1 @@
+# edgy.nvim
