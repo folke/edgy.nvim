@@ -1,5 +1,4 @@
 local View = require("edgy.view")
-local Layout = require("edgy.layout")
 
 ---@class Edgy.Sidebar.Opts
 ---@field views (Edgy.View.Opts|string)[]
@@ -23,6 +22,16 @@ local wincmds = {
 ---@field state table<window,any>
 local M = {}
 M.__index = M
+
+---@class Edgy.Size
+---@field width? number
+---@field height? number
+
+---@param size number
+---@param max number
+function M.size(size, max)
+  return math.max(size < 1 and math.floor(max * size) or size, 1)
+end
 
 ---@param pos Edgy.Pos
 ---@param opts Edgy.Sidebar.Opts
@@ -102,7 +111,66 @@ function M:resize()
   if #self.wins == 0 then
     return
   end
-  Layout.layout(self.wins, { vertical = self.vertical, size = self.size })
+  local long = self.vertical and "height" or "width"
+  local short = self.vertical and "width" or "height"
+
+  local bounds = {
+    width = self.vertical and M.size(self.size, vim.o.columns) or 0,
+    height = self.vertical and 0 or M.size(self.size, vim.o.lines),
+  }
+
+  -- calculate the sidebar bounds
+  for _, win in ipairs(self.wins) do
+    if win.visible then
+      local size = M.size(win.view.size[short] or 0, self.vertical and vim.o.columns or vim.o.lines)
+      bounds[short] = math.max(bounds[short], size)
+    end
+    local size = self.vertical and vim.api.nvim_win_get_height(win.win)
+      or vim.api.nvim_win_get_width(win.win)
+    bounds[long] = bounds[long] + size
+  end
+
+  -- views with auto-sized windows
+  local auto = {} ---@type Edgy.Window[]
+
+  -- views with fixed-sized windows
+  local fixed = {} ---@type Edgy.Window[]
+
+  -- calculate window sizes
+  local free = bounds[long]
+  for _, win in ipairs(self.wins) do
+    win[short] = bounds[short]
+    win[long] = 1
+    if win.visible and win.view.size[long] then
+      -- fixed-sized windows
+      win[long] = M.size(win.view.size[long], bounds[long])
+      fixed[#fixed + 1] = win
+      free = free - win[long]
+    elseif win.visible then
+      -- auto-sized windows
+      auto[#auto + 1] = win
+    else
+      win[long] = self.vertical and 1 or 1
+      -- hidden windows
+      free = free - win[long]
+    end
+  end
+
+  -- distribute free space to auto-sized windows,
+  -- or fixed-sized windows when there are no auto-sized windows
+  if free > 0 then
+    local _wins = #auto > 0 and auto or fixed
+    local extra = math.ceil(free / #_wins)
+    for _, win in ipairs(_wins) do
+      win[long] = win[long] + math.min(extra, free)
+      free = math.max(free - extra, 0)
+    end
+  end
+
+  -- resize windows
+  for _, win in ipairs(self.wins) do
+    win:resize()
+  end
 end
 
 function M:state_save()
