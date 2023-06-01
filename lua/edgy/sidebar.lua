@@ -110,7 +110,11 @@ function M:layout()
 end
 
 function M:resize()
-  Layout.layout(self:wins(), { vertical = self.vertical, size = self.size })
+  local wins = self:wins()
+  if #wins == 0 then
+    return
+  end
+  Layout.layout(wins, { vertical = self.vertical, size = self.size })
 end
 
 function M:wins()
