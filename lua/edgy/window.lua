@@ -91,10 +91,14 @@ end
 function M:winbar()
   ---@type string[]
   local parts = {}
+
   parts[#parts + 1] = "%" .. self.win .. "@v:lua.edgy_click@"
-  parts[#parts + 1] = "%#SignColumn#" .. (self.visible and Config.icons.open or Config.icons.closed) .. "%*"
+  parts[#parts + 1] = "%#SignColumn#"
+    .. (self.visible and Config.icons.open or Config.icons.closed)
+    .. "%*%<"
   parts[#parts + 1] = "%#Title# " .. self.view.title .. "%*"
   parts[#parts + 1] = "%T"
+
   return table.concat(parts)
 end
 

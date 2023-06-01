@@ -156,8 +156,8 @@ function M:resize()
       -- auto-sized windows
       auto[#auto + 1] = win
     else
-      win[long] = self.vertical and 1 or 1
       -- hidden windows
+      win[long] = self.vertical and 1 or (vim.fn.strdisplaywidth(win.view.title) + 3)
       free = free - win[long]
     end
   end
