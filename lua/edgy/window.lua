@@ -4,9 +4,10 @@ local Config = require("edgy.config")
 ---@field visible boolean
 ---@field view Edgy.View
 ---@field win window
----@field changed number
 ---@field width number
 ---@field height number
+---@field next? Edgy.Window
+---@field prev? Edgy.Window
 local M = {}
 M.__index = M
 
@@ -20,7 +21,6 @@ function M.new(win, view)
     visible = true,
     view = view,
     win = win,
-    changed = 0,
   }, M)
   M.cache[win] = self
   if self.view.winbar ~= false then
@@ -49,11 +49,41 @@ function M:show(visibility)
       end
     end
   end
-  self.changed = vim.loop.hrtime()
+  if not self.visible then
+    self:ensure_one_visible()
+  end
   vim.cmd([[redrawstatus!]])
   require("edgy.layout").update()
 end
---
+
+function M:ensure_one_visible()
+  if self:sibling(function(w)
+    return w.visible
+  end) then
+    return
+  end
+  if self.prev then
+    self.prev:show()
+  elseif self.next then
+    self.next:show()
+  end
+end
+
+---@param filter fun(win:Edgy.Window):boolean?
+---@param dir? "next" | "prev"
+function M:sibling(filter, dir)
+  if not dir then
+    return self:sibling(filter, "next") or self:sibling(filter, "prev")
+  end
+  local sibling = self[dir]
+  while sibling do
+    if filter(sibling) then
+      return sibling
+    end
+    sibling = sibling[dir]
+  end
+end
+
 function M:toggle()
   self:show(not self.visible)
 end

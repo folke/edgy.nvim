@@ -23,8 +23,10 @@ function M.layout(wins, opts)
 
   -- calculate the sidebar bounds
   for _, win in ipairs(wins) do
-    bounds[short] =
-      math.max(bounds[short], M.size(win.view.size[short] or 0, opts.vertical and vim.o.columns or vim.o.lines))
+    if win.visible then
+      bounds[short] =
+        math.max(bounds[short], M.size(win.view.size[short] or 0, opts.vertical and vim.o.columns or vim.o.lines))
+    end
     bounds[long] = bounds[long]
       + (opts.vertical and vim.api.nvim_win_get_height(win.win) or vim.api.nvim_win_get_width(win.win))
   end
@@ -48,6 +50,7 @@ function M.layout(wins, opts)
       -- auto-sized windows
       auto[#auto + 1] = win
     else
+      win[long] = opts.vertical and 1 or 10
       -- hidden windows
       free = free - win[long]
     end
@@ -110,10 +113,10 @@ function M.needs_layout()
   local done = {}
   for _, pos in ipairs({ "left", "right", "bottom", "top" }) do
     local sidebar = Config.layout[pos]
-    if sidebar and #sidebar:wins() > 0 then
+    if sidebar and #sidebar.wins > 0 then
       local wins = vim.tbl_map(function(w)
         return w.win
-      end, sidebar:wins())
+      end, sidebar.wins)
 
       local found = vim.tbl_filter(function(w)
         return not vim.tbl_contains(done, w)
