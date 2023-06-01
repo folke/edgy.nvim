@@ -16,9 +16,11 @@ local wincmds = {
 ---@class Edgy.Sidebar
 ---@field pos Edgy.Pos
 ---@field views Edgy.View[]
+---@field wins Edgy.Window[]
 ---@field size integer
 ---@field titles boolean
 ---@field vertical boolean
+---@field state table<window,any>
 local M = {}
 M.__index = M
 
@@ -33,16 +35,23 @@ function M.new(pos, opts)
     size = opts.size or vertical and 30 or 10,
     titles = opts.titles or true,
     vertical = vertical,
+    wins = {},
+    state = {},
   }, M)
   for _, v in ipairs(opts.views) do
     v = type(v) == "string" and { ft = v } or v
     ---@cast v Edgy.View.Opts
     table.insert(self.views, View.new(v))
   end
+  self:on_win_enter()
+  return self
+end
+
+function M:on_win_enter()
   vim.api.nvim_create_autocmd("WinEnter", {
     callback = function()
       local win = vim.api.nvim_get_current_win()
-      for _, w in ipairs(self:wins()) do
+      for _, w in ipairs(self.wins) do
         if w.win == win then
           if not w.visible then
             w:show()
@@ -52,51 +61,26 @@ function M.new(pos, opts)
       end
     end,
   })
-  return self
 end
 
 ---@param wins table<string, number[]>
 function M:update(wins)
+  self.wins = {}
   for _, view in ipairs(self.views) do
     view:update(wins[view.ft] or {})
+    vim.list_extend(self.wins, view.wins)
   end
-  self:update_visible()
-end
-
-function M:update_visible()
-  local wins = self:wins()
-
-  if #wins == 0 then
-    return
-  end
-
-  if #wins == 1 then
-    wins[1].visible = true
-    return
-  end
-
-  local visible = 0
-  local last = 1
-  for w, win in ipairs(wins) do
-    if win.visible then
-      visible = visible + 1
-    elseif win.changed > wins[last].changed then
-      last = w
-    end
-  end
-  if visible == 0 then
-    if wins[last + 1] then
-      wins[last + 1].visible = true
-    else
-      wins[last - 1].visible = true
-    end
+  for w, win in ipairs(self.wins) do
+    win.prev = self.wins[w - 1]
+    win.next = self.wins[w + 1]
   end
 end
 
 function M:layout()
+  self:state_save()
   ---@type number?
   local last
-  for _, w in ipairs(self:wins()) do
+  for _, w in ipairs(self.wins) do
     local win = w.win
     if not last then
       vim.api.nvim_win_call(win, function()
@@ -107,23 +91,36 @@ function M:layout()
     end
     last = win
   end
+  self:state_restore()
 end
 
 function M:resize()
-  local wins = self:wins()
-  if #wins == 0 then
+  if #self.wins == 0 then
     return
   end
-  Layout.layout(wins, { vertical = self.vertical, size = self.size })
+  self:state_save()
+  Layout.layout(self.wins, { vertical = self.vertical, size = self.size })
+  self:state_restore()
 end
 
-function M:wins()
-  ---@type Edgy.Window[]
-  local wins = {}
-  for _, view in ipairs(self.views) do
-    vim.list_extend(wins, view.wins)
+function M:state_save()
+  self.state = {}
+  for _, win in ipairs(self.wins) do
+    vim.api.nvim_win_call(win.win, function()
+      self.state[win.win] = vim.fn.winsaveview()
+    end)
   end
-  return wins
+end
+
+function M:state_restore()
+  for _, win in ipairs(self.wins) do
+    local state = self.state[win.win]
+    if state then
+      vim.api.nvim_win_call(win.win, function()
+        vim.fn.winrestview(state)
+      end)
+    end
+  end
 end
 
 return M
