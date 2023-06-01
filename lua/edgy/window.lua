@@ -27,6 +27,8 @@ function M.new(win, view)
   vim.api.nvim_win_call(self.win, function()
     vim.cmd([[setlocal winminwidth=0]])
     vim.cmd([[setlocal winminheight=0]])
+    vim.cmd([[setlocal winfixwidth]])
+    -- vim.cmd([[setlocal winfixheight]])
   end)
   return self
 end
