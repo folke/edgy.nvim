@@ -99,7 +99,7 @@ end
 function M._update()
   ---@type table<string, number[]>
   local wins = {}
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     local ft = vim.bo[vim.api.nvim_win_get_buf(win)].filetype
     if ft then
       wins[ft] = wins[ft] or {}
