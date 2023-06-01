@@ -77,7 +77,6 @@ function M:update(wins)
 end
 
 function M:layout()
-  self:state_save()
   ---@type number?
   local last
   for _, w in ipairs(self.wins) do
@@ -97,16 +96,13 @@ function M:layout()
     end
     last = win
   end
-  self:state_restore()
 end
 
 function M:resize()
   if #self.wins == 0 then
     return
   end
-  self:state_save()
   Layout.layout(self.wins, { vertical = self.vertical, size = self.size })
-  self:state_restore()
 end
 
 function M:state_save()

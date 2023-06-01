@@ -160,6 +160,9 @@ function M.update()
   local dirty = M.needs_layout()
   if dirty then
     for _, pos in ipairs({ "bottom", "top", "left", "right" }) do
+    for _, sidebar in pairs(Config.layout) do
+      sidebar:state_save()
+    end
       if Config.layout[pos] then
         Config.layout[pos]:layout()
       end
@@ -170,8 +173,10 @@ function M.update()
   for _, pos in ipairs({ "left", "right", "bottom", "top" }) do
     if Config.layout[pos] then
       Config.layout[pos]:resize()
+    for _, sidebar in pairs(Config.layout) do
+      sidebar:state_restore()
     end
-  end
+  end)
 
   vim.o.splitkeep = splitkeep
   vim.o.eventignore = ""
