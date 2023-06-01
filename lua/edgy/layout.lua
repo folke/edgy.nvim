@@ -13,83 +13,69 @@ end
 ---@param wins Edgy.Window[]
 ---@param opts {vertical: boolean, size:number}
 function M.layout(wins, opts)
-  local width = opts.vertical and M.size(opts.size, vim.o.columns) or 0
-  local height = opts.vertical and 0 or M.size(opts.size, vim.o.lines)
+  local long = opts.vertical and "height" or "width"
+  local short = opts.vertical and "width" or "height"
+
+  local bounds = {
+    width = opts.vertical and M.size(opts.size, vim.o.columns) or 0,
+    height = opts.vertical and 0 or M.size(opts.size, vim.o.lines),
+  }
 
   -- calculate the sidebar size
   for _, win in ipairs(wins) do
-    if opts.vertical then
-      width = math.max(width, M.size(win.view.size.width or 0, vim.o.columns))
-      height = height + vim.api.nvim_win_get_height(win.win)
-    else
-      width = width + vim.api.nvim_win_get_width(win.win)
-      height = math.max(height, M.size(win.view.size.height or 0, vim.o.lines))
-    end
+    bounds[short] =
+      math.max(bounds[short], M.size(win.view.size[short] or 0, opts.vertical and vim.o.columns or vim.o.lines))
+    bounds[long] = bounds[long]
+      + (opts.vertical and vim.api.nvim_win_get_height(win.win) or vim.api.nvim_win_get_width(win.win))
   end
 
   -- calculate view sizes
-  local free = opts.vertical and height or width
-  local auto = 0
+
+  local free = bounds[long]
+
+  ---@type Edgy.Window[]
+  local auto = {}
+  ---@type Edgy.Window[]
+  local fixed = {}
+  ---@type Edgy.Window[]
+  local hidden = {}
+
   for _, win in ipairs(wins) do
+    win[short] = bounds[short]
+    win[long] = 1
     if win.visible then
-      if opts.vertical then
-        if win.view.size.height then
-          free = free - M.size(win.view.size.height, height)
-        else
-          auto = auto + 1
-        end
+      if win.view.size[long] then
+        win[long] = M.size(win.view.size[long], bounds[long])
+        fixed[#fixed + 1] = win
+        free = free - win[long]
       else
-        if win.view.size.width then
-          free = free - M.size(win.view.size.width, width)
-        else
-          auto = auto + 1
-        end
+        auto[#auto + 1] = win
       end
     else
+      hidden[#hidden + 1] = win
       free = free - 1
     end
   end
 
-  -- layout views
+  if free > 0 then
+    local _wins = #auto > 0 and auto or fixed
+    local extra = math.ceil(free / #_wins)
+    for _, win in ipairs(_wins) do
+      win[long] = win[long] + math.min(extra, free)
+      free = free - extra
+      if free <= 0 then
+        break
+      end
+    end
+  end
+
+  for _, win in ipairs(hidden) do
+    win:resize()
+  end
+
   for _, win in ipairs(wins) do
     if win.visible then
-      if opts.vertical then
-        if win.view.size.height then
-          if auto == 0 and free > 0 then
-            win:resize(width, free + M.size(win.view.size.height, height))
-            free = 0
-          else
-            win:resize(width, M.size(win.view.size.height, height))
-          end
-        else
-          win:resize(width, math.floor(free / auto))
-        end
-      else
-        if win.view.size.width then
-          if auto == 0 and free > 0 then
-            win:resize(free + M.size(win.view.size.width, width), height)
-            free = 0
-          else
-            win:resize(M.size(win.view.size.width, width), height)
-          end
-        else
-          win:resize(math.floor(free / auto), height)
-        end
-      end
-    else
-      if opts.vertical then
-        if #wins == 1 then
-          win:resize(0, height)
-        elseif not win.last then
-          win:resize(width, 0)
-        end
-      else
-        if #wins == 1 then
-          win:resize(width, 0)
-        elseif not win.last then
-          win:resize(0, height)
-        end
-      end
+      win:resize()
     end
   end
 end

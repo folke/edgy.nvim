@@ -5,6 +5,8 @@ local Config = require("edgy.config")
 ---@field view Edgy.View
 ---@field win window
 ---@field changed number
+---@field width number
+---@field height number
 local M = {}
 M.__index = M
 
@@ -53,6 +55,7 @@ function M:toggle()
 end
 
 function M:winbar()
+  ---@type string[]
   local parts = {}
   parts[#parts + 1] = "%" .. self.win .. "@v:lua.edgy_click@"
   parts[#parts + 1] = "%#SignColumn#" .. (self.visible and Config.icons.open or Config.icons.closed) .. "%*"
@@ -61,16 +64,12 @@ function M:winbar()
   return table.concat(parts)
 end
 
-function M:resize(width, height)
-  if height then
-    vim.api.nvim_win_set_height(self.win, height)
-    if height == 0 then
-      vim.fn.win_move_statusline(self.win, -1)
-    end
+function M:resize()
+  vim.api.nvim_win_set_height(self.win, self.height)
+  if self.height == 0 then
+    -- vim.fn.win_move_statusline(self.win, -1)
   end
-  if width then
-    vim.api.nvim_win_set_width(self.win, width)
-  end
+  vim.api.nvim_win_set_width(self.win, self.width)
 end
 
 ---@diagnostic disable-next-line: global_usage
