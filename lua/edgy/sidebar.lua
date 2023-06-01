@@ -50,7 +50,7 @@ function M.new(pos, opts)
   for _, v in ipairs(opts.views) do
     v = type(v) == "string" and { ft = v } or v
     ---@cast v Edgy.View.Opts
-    table.insert(self.views, View.new(v))
+    table.insert(self.views, View.new(v, self))
   end
   self:on_win_enter()
   return self

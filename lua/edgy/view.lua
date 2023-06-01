@@ -6,6 +6,7 @@ local Window = require("edgy.window")
 ---@field size? Edgy.Size
 ---@field winbar? boolean
 ---@field pinned? boolean
+---@field sidebar Edgy.Sidebar
 ---@field open? fun()
 ---@field close? fun()
 
@@ -17,8 +18,9 @@ local M = {}
 M.__index = M
 
 ---@param opts Edgy.View.Opts
-function M.new(opts)
+function M.new(opts, sidebar)
   local self = setmetatable(opts, M)
+  self.sidebar = sidebar
   self.wins = {}
   self.title = self.title or self.ft:sub(1, 1):upper() .. self.ft:sub(2)
   self.size = self.size or {}
