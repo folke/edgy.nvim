@@ -10,6 +10,7 @@ local defaults = {
     closed = " ",
     open = " ",
   },
+  hacks = true,
 }
 
 ---@type Edgy.Config
@@ -29,6 +30,11 @@ function M.setup(opts)
   for pos, s in pairs(opts.layout) do
     M.layout[pos] = Sidebar.new(pos, s)
   end
+
+  if options.hacks then
+    require("edgy.hacks").setup()
+  end
+
   local group = vim.api.nvim_create_augroup("layout", { clear = true })
   vim.api.nvim_create_autocmd({ "BufWinEnter", "WinClosed", "VimResized" }, {
     group = group,

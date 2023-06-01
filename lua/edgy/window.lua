@@ -26,12 +26,7 @@ function M.new(win, view)
   if self.view.winbar ~= false then
     vim.wo[self.win].winbar = "%!v:lua.edgy_winbar(" .. win .. ")"
   end
-  vim.api.nvim_win_call(self.win, function()
-    vim.cmd([[setlocal winminwidth=0]])
-    vim.cmd([[setlocal winminheight=0]])
-    vim.cmd([[setlocal winfixwidth]])
-    -- vim.cmd([[setlocal winfixheight]])
-  end)
+  vim.wo[self.win].winfixwidth = true
   return self
 end
 
@@ -66,9 +61,6 @@ end
 
 function M:resize()
   vim.api.nvim_win_set_height(self.win, self.height)
-  if self.height == 0 then
-    -- vim.fn.win_move_statusline(self.win, -1)
-  end
   vim.api.nvim_win_set_width(self.win, self.width)
 end
 

@@ -7,7 +7,7 @@ local M = {}
 ---@param size number
 ---@param max number
 function M.size(size, max)
-  return size < 1 and math.floor(max * size) or size
+  return math.max(size < 1 and math.floor(max * size) or size, 1)
 end
 
 ---@param wins Edgy.Window[]
@@ -21,7 +21,7 @@ function M.layout(wins, opts)
     height = opts.vertical and 0 or M.size(opts.size, vim.o.lines),
   }
 
-  -- calculate the sidebar size
+  -- calculate the sidebar bounds
   for _, win in ipairs(wins) do
     bounds[short] =
       math.max(bounds[short], M.size(win.view.size[short] or 0, opts.vertical and vim.o.columns or vim.o.lines))
@@ -29,54 +29,44 @@ function M.layout(wins, opts)
       + (opts.vertical and vim.api.nvim_win_get_height(win.win) or vim.api.nvim_win_get_width(win.win))
   end
 
-  -- calculate view sizes
+  -- views with auto-sized windows
+  local auto = {} ---@type Edgy.Window[]
+
+  -- views with fixed-sized windows
+  local fixed = {} ---@type Edgy.Window[]
 
   local free = bounds[long]
-
-  ---@type Edgy.Window[]
-  local auto = {}
-  ---@type Edgy.Window[]
-  local fixed = {}
-  ---@type Edgy.Window[]
-  local hidden = {}
-
   for _, win in ipairs(wins) do
     win[short] = bounds[short]
     win[long] = 1
-    if win.visible then
-      if win.view.size[long] then
-        win[long] = M.size(win.view.size[long], bounds[long])
-        fixed[#fixed + 1] = win
-        free = free - win[long]
-      else
-        auto[#auto + 1] = win
-      end
+    if win.visible and win.view.size[long] then
+      -- fixed-sized windows
+      win[long] = M.size(win.view.size[long], bounds[long])
+      fixed[#fixed + 1] = win
+      free = free - win[long]
+    elseif win.visible then
+      -- auto-sized windows
+      auto[#auto + 1] = win
     else
-      hidden[#hidden + 1] = win
-      free = free - 1
+      -- hidden windows
+      free = free - win[long]
     end
   end
 
   if free > 0 then
+    -- distribute free space to auto-sized windows,
+    -- or fixed-sized windows when there are no auto-sized windows
     local _wins = #auto > 0 and auto or fixed
     local extra = math.ceil(free / #_wins)
     for _, win in ipairs(_wins) do
       win[long] = win[long] + math.min(extra, free)
-      free = free - extra
-      if free <= 0 then
-        break
-      end
+      free = math.max(free - extra, 0)
     end
   end
 
-  for _, win in ipairs(hidden) do
-    win:resize()
-  end
-
+  -- resize windows
   for _, win in ipairs(wins) do
-    if win.visible then
-      win:resize()
-    end
+    win:resize()
   end
 end
 
@@ -139,6 +129,7 @@ function M.needs_layout()
 end
 
 function M.update()
+  vim.o.winminheight = 0
   local Config = require("edgy.config")
 
   ---@type table<string, number[]>
