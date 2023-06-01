@@ -161,6 +161,9 @@ function M:resize()
       free = free - win[long]
     end
   end
+  if not self.vertical then
+    free = free - 1
+  end
 
   -- distribute free space to auto-sized windows,
   -- or fixed-sized windows when there are no auto-sized windows
