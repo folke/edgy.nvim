@@ -101,7 +101,7 @@ function M._update()
   local wins = {}
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local ft = vim.bo[vim.api.nvim_win_get_buf(win)].filetype
-    if ft and vim.api.nvim_win_get_config(win).relative == "" then
+    if ft then
       wins[ft] = wins[ft] or {}
       table.insert(wins[ft], win)
     end

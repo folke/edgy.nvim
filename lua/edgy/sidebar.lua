@@ -95,6 +95,12 @@ function M:layout()
         vim.cmd("wincmd " .. wincmds[self.pos])
       end)
     else
+      -- make floating windows normal windows
+      if vim.api.nvim_win_get_config(win).relative ~= "" then
+        vim.api.nvim_win_call(win, function()
+          vim.cmd("wincmd " .. wincmds[self.pos])
+        end)
+      end
       local ok, err = pcall(vim.fn.win_splitmove, win, last, { vertical = not self.vertical })
       if not ok then
         vim.notify("Edgy: Failed to layout windows.\n" .. err .. "\n" .. vim.inspect({
