@@ -5,7 +5,6 @@ local Config = require("edgy.config")
 ---@field view Edgy.View
 ---@field win window
 ---@field changed number
----@field last boolean
 local M = {}
 M.__index = M
 
@@ -20,7 +19,6 @@ function M.new(win, view)
     view = view,
     win = win,
     changed = 0,
-    last = false,
   }, M)
   M.cache[win] = self
   if self.view.winbar ~= false then
@@ -47,7 +45,7 @@ function M:show(visibility)
   vim.cmd([[redrawstatus!]])
   require("edgy.layout").update()
 end
-
+--
 function M:toggle()
   self:show(not self.visible)
 end

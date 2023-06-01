@@ -57,11 +57,6 @@ function M:update_visible()
     return
   end
 
-  for _, win in ipairs(wins) do
-    win.last = false
-  end
-  wins[#wins].last = true
-
   if #wins == 1 then
     wins[1].visible = true
     return
