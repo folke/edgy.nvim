@@ -37,6 +37,10 @@ end
 ---@param visibility? boolean
 function M:show(visibility)
   self.visible = visibility == nil and true or visibility or false
+  if not self.visible and not self.prev and not self.next then
+    self.visible = true
+    return
+  end
   if not self.visible and vim.api.nvim_get_current_win() == self.win then
     vim.cmd([[wincmd p]])
   end
