@@ -36,7 +36,7 @@ function M.setup(opts)
   end
 
   local group = vim.api.nvim_create_augroup("layout", { clear = true })
-  vim.api.nvim_create_autocmd({ "BufWinEnter", "WinClosed", "VimResized" }, {
+  vim.api.nvim_create_autocmd({ "BufWinEnter", "WinClosed", "VimResized", "WinNew", "WinResized" }, {
     group = group,
     callback = Layout.update,
   })
