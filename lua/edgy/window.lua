@@ -42,7 +42,12 @@ function M:show(visibility)
     return
   end
   if not self.visible and vim.api.nvim_get_current_win() == self.win then
-    vim.cmd([[wincmd p]])
+    for _, w in ipairs(vim.api.nvim_list_wins()) do
+      if not M.cache[w] then
+        vim.api.nvim_set_current_win(w)
+        break
+      end
+    end
   end
   self.changed = vim.loop.hrtime()
   vim.cmd([[redrawstatus!]])
