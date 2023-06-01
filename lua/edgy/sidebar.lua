@@ -39,6 +39,19 @@ function M.new(pos, opts)
     ---@cast v Edgy.View.Opts
     table.insert(self.views, View.new(v))
   end
+  vim.api.nvim_create_autocmd("WinEnter", {
+    callback = function()
+      local win = vim.api.nvim_get_current_win()
+      for _, w in ipairs(self:wins()) do
+        if w.win == win then
+          if not w.visible then
+            w:show()
+          end
+          break
+        end
+      end
+    end,
+  })
   return self
 end
 
