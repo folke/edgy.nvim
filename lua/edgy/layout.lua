@@ -86,12 +86,12 @@ function M.update()
   vim.o.eventignore = "all"
 
   -- Don't do anything related to splitkeep while updating
-  local splitkeep = vim.o.splitkeep
-  vim.o.splitkeep = "cursor"
+  -- local splitkeep = vim.o.splitkeep
+  -- vim.o.splitkeep = "cursor"
 
   Util.try(M._update)
 
-  vim.o.splitkeep = splitkeep
+  -- vim.o.splitkeep = splitkeep
   vim.o.eventignore = ""
   M.updating = false
 end

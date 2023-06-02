@@ -16,9 +16,9 @@ function M.setup()
     if win_t == nil then
       return
     end
-    -- ffi.C.skip_win_fix_cursor = win ~= vim.api.nvim_get_current_win()
+    ffi.C.skip_win_fix_cursor = win ~= vim.api.nvim_get_current_win()
     ffi.C.win_setheight_win(height, win_t)
-    -- ffi.C.skip_win_fix_cursor = false
+    ffi.C.skip_win_fix_cursor = false
   end
 end
 
