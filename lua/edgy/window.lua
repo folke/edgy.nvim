@@ -161,8 +161,15 @@ function M:winbar()
 end
 
 function M:resize()
-  vim.api.nvim_win_set_height(self.win, self.height)
-  vim.api.nvim_win_set_width(self.win, self.width)
+  if not self:is_valid() then
+    return
+  end
+  if vim.api.nvim_win_get_height(self.win) ~= self.height then
+    vim.api.nvim_win_set_height(self.win, self.height)
+  end
+  if vim.api.nvim_win_get_width(self.win) ~= self.width then
+    vim.api.nvim_win_set_width(self.win, self.width)
+  end
 end
 
 ---@diagnostic disable-next-line: global_usage
