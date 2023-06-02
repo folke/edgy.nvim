@@ -97,7 +97,6 @@ function M:open()
     else
       Util.error("View is pinned and has no open function")
     end
-    self.opening = false
   end)
 end
 
