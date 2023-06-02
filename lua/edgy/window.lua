@@ -26,13 +26,21 @@ function M.new(win, view)
   }, M)
   M.cache[win] = self
   self.opening = false
-  if self.view.winbar ~= false then
+
+  ---@type vim.wo
+  local wo = vim.tbl_deep_extend("force", {}, Config.wo, view.sidebar.wo or {}, view.wo or {})
+
+  if wo.winbar == true then
     if vim.api.nvim_win_get_height(win) == 1 then
       vim.api.nvim_win_set_height(win, 2)
     end
-    vim.wo[self.win].winbar = "%!v:lua.edgy_winbar(" .. win .. ")"
+    wo.winbar = "%!v:lua.edgy_winbar(" .. win .. ")"
+  elseif wo.winbar == false then
+    wo.winbar = ""
   end
-  vim.wo[self.win].winfixwidth = true
+  for k, v in pairs(wo) do
+    vim.wo[win][k] = v
+  end
   vim.api.nvim_create_autocmd("WinClosed", {
     callback = function(event)
       if tonumber(event.match) == self.win then
@@ -143,10 +151,10 @@ function M:winbar()
   local parts = {}
 
   parts[#parts + 1] = "%" .. self.win .. "@v:lua.edgy_click@"
-  parts[#parts + 1] = "%#SignColumn#"
+  parts[#parts + 1] = "%#EdgyIcon#"
     .. (self.visible and Config.icons.open or Config.icons.closed)
     .. "%*%<"
-  parts[#parts + 1] = "%#Title# " .. self.view.title .. "%*"
+  parts[#parts + 1] = "%#EdgyTitle# " .. self.view.title .. "%*"
   parts[#parts + 1] = "%T"
 
   return table.concat(parts)

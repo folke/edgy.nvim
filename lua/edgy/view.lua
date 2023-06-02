@@ -5,11 +5,11 @@ local Window = require("edgy.window")
 ---@field filter? fun(win:window):boolean?
 ---@field title? string
 ---@field size? Edgy.Size
----@field winbar? boolean
 ---@field pinned? boolean
 ---@field sidebar Edgy.Sidebar
 ---@field open? fun()|string
 ---@field close? fun()
+---@field wo? vim.wo
 
 ---@class Edgy.View: Edgy.View.Opts
 ---@field title string

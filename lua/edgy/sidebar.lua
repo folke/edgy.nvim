@@ -3,7 +3,7 @@ local View = require("edgy.view")
 ---@class Edgy.Sidebar.Opts
 ---@field views (Edgy.View.Opts|string)[]
 ---@field size? number
----@field titles? boolean
+---@field wo? vim.wo
 
 local wincmds = {
   bottom = "J",
@@ -17,9 +17,9 @@ local wincmds = {
 ---@field views Edgy.View[]
 ---@field wins Edgy.Window[]
 ---@field size integer
----@field titles boolean
 ---@field vertical boolean
 ---@field state table<window,any>
+---@field wo? vim.wo
 local M = {}
 M.__index = M
 
@@ -42,10 +42,10 @@ function M.new(pos, opts)
     pos = pos,
     views = {},
     size = opts.size or vertical and 30 or 10,
-    titles = opts.titles or true,
     vertical = vertical,
     wins = {},
     state = {},
+    wo = opts.wo,
   }, M)
   for _, v in ipairs(opts.views) do
     v = type(v) == "string" and { ft = v } or v

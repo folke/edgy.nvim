@@ -11,6 +11,14 @@ local defaults = {
     open = " ",
   },
   hacks = true,
+  ---@type vim.wo
+  wo = {
+    winbar = true,
+    winfixwidth = true,
+    winhighlight = "WinBar:EdgyWinBar,Normal:EdgyNormal",
+    spell = false,
+    signcolumn = "no",
+  },
 }
 
 ---@type Edgy.Config
@@ -34,6 +42,11 @@ function M.setup(opts)
   if options.hacks then
     require("edgy.hacks").setup()
   end
+
+  vim.api.nvim_set_hl(0, "EdgyIcon", { default = true, link = "SignColumn" })
+  vim.api.nvim_set_hl(0, "EdgyTitle", { default = true, link = "Title" })
+  vim.api.nvim_set_hl(0, "EdgyWinBar", { default = true, link = "Winbar" })
+  vim.api.nvim_set_hl(0, "EdgyNormal", { default = true, link = "NormalFloat" })
 
   local group = vim.api.nvim_create_augroup("layout", { clear = true })
   vim.api.nvim_create_autocmd({ "BufWinEnter", "WinClosed", "VimResized", "WinNew", "WinResized" }, {
