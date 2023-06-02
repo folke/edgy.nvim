@@ -59,24 +59,34 @@ end
 function M:on_win_enter()
   vim.api.nvim_create_autocmd("WinEnter", {
     callback = function()
-      local win = vim.api.nvim_get_current_win()
-      for _, w in ipairs(self.wins) do
-        if w.win == win then
-          if not w.visible then
-            w:show()
+      vim.schedule(function()
+        local win = vim.api.nvim_get_current_win()
+        for _, w in ipairs(self.wins) do
+          if w.win == win then
+            if not w.visible then
+              w:show()
+            end
+            break
           end
-          break
         end
-      end
+      end)
     end,
   })
 end
 
 ---@param wins table<string, number[]>
 function M:update(wins)
+  local visible = 0
+  for _, view in ipairs(self.views) do
+    visible = visible + view:update(wins[view.ft] or {})
+  end
   self.wins = {}
   for _, view in ipairs(self.views) do
-    view:update(wins[view.ft] or {})
+    if visible > 0 then
+      view:check_pinned()
+    else
+      view:hide_pinned()
+    end
     vim.list_extend(self.wins, view.wins)
   end
   for w, win in ipairs(self.wins) do
