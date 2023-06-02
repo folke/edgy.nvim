@@ -9,6 +9,10 @@ function M.setup()
   ]])
 
   vim.api.nvim_win_set_height = function(win, height)
+    if not vim.api.nvim_win_is_valid(win) then
+      return
+    end
+
     if height < 0 or height > vim.o.lines then
       return
     end
@@ -16,9 +20,10 @@ function M.setup()
     if win_t == nil then
       return
     end
-    ffi.C.skip_win_fix_cursor = win ~= vim.api.nvim_get_current_win()
+    local wfc = ffi.C.skip_win_fix_cursor
+    ffi.C.skip_win_fix_cursor = wfc or win ~= vim.api.nvim_get_current_win()
     ffi.C.win_setheight_win(height, win_t)
-    ffi.C.skip_win_fix_cursor = false
+    ffi.C.skip_win_fix_cursor = wfc
   end
 end
 
