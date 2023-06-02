@@ -77,7 +77,6 @@ end
 ---@param pos Edgy.Pos[]
 ---@param fn fun(sidebar: Edgy.Sidebar, pos: Edgy.Pos)
 function M.foreach(pos, fn)
-  local Config = require("edgy.config")
   for _, p in ipairs(pos) do
     if Config.layout[p] then
       fn(Config.layout[p], p)
@@ -97,6 +96,8 @@ function M.update()
   M.tries = M.tries + 1
   M.updating = true
 
+  local sk = vim.o.splitkeep
+  vim.o.splitkeep = "cursor"
   vim.o.winminheight = 0
   vim.o.winminwidth = 1
 
@@ -121,6 +122,7 @@ function M.update()
 
   -- vim.o.splitkeep = splitkeep
   vim.o.eventignore = ""
+  vim.o.splitkeep = sk
   M.updating = false
 end
 
@@ -152,7 +154,6 @@ function M._update()
     sidebar:resize()
   end)
 
-  local Config = require("edgy.config")
   for _, sidebar in pairs(Config.layout) do
     sidebar:state_restore()
   end

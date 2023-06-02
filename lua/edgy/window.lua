@@ -164,12 +164,16 @@ function M:resize()
   if not self:is_valid() then
     return
   end
-  if vim.api.nvim_win_get_height(self.win) ~= self.height then
-    vim.api.nvim_win_set_height(self.win, self.height)
+  local changes = {}
+  for _, key in ipairs({ "width", "height" }) do
+    local current = vim.api["nvim_win_get_" .. key](self.win)
+    local needed = self[key]
+    if current ~= needed then
+      changes[key] = { current, needed }
+      vim.api["nvim_win_set_" .. key](self.win, needed)
+    end
   end
-  if vim.api.nvim_win_get_width(self.win) ~= self.width then
-    vim.api.nvim_win_set_width(self.win, self.width)
-  end
+  return changes
 end
 
 ---@diagnostic disable-next-line: global_usage

@@ -15,6 +15,7 @@ local defaults = {
   wo = {
     winbar = true,
     winfixwidth = true,
+    winfixheight = false,
     winhighlight = "WinBar:EdgyWinBar,Normal:EdgyNormal",
     spell = false,
     signcolumn = "no",

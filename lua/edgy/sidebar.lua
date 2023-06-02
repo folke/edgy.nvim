@@ -1,6 +1,4 @@
 local View = require("edgy.view")
-local Config = require("edgy.config")
-local Util = require("edgy.util")
 
 ---@class Edgy.Sidebar.Opts
 ---@field views (Edgy.View.Opts|string)[]
@@ -167,23 +165,22 @@ function M:resize()
   for _, win in ipairs(self.wins) do
     win[short] = bounds[short]
     win[long] = 1
+    -- fixed-sized windows
     if win.visible and win.view.size[long] then
-      -- fixed-sized windows
       win[long] = M.size(win.view.size[long], bounds[long])
       fixed[#fixed + 1] = win
-      free = free - win[long]
+    -- auto-sized windows
     elseif win.visible then
-      -- auto-sized windows
       auto[#auto + 1] = win
+    -- hidden windows
     else
-      -- hidden windows
       win[long] = self.vertical and 1 or (vim.fn.strdisplaywidth(win.view.title) + 3)
-      free = free - win[long]
     end
+    free = free - win[long]
   end
-  if not self.vertical then
-    free = free - 1
-  end
+  -- if not self.vertical then
+  -- free = free - 1
+  -- end
 
   -- distribute free space to auto-sized windows,
   -- or fixed-sized windows when there are no auto-sized windows
@@ -197,8 +194,15 @@ function M:resize()
   end
 
   -- resize windows
+  local updates = {}
   for _, win in ipairs(self.wins) do
-    win:resize()
+    local changes = win:resize()
+    if not vim.tbl_isempty(changes) then
+      updates[#updates + 1] = { win.view.title, changes }
+    end
+  end
+  if #updates > 0 then
+    -- dd("resize", updates)
   end
 end
 
