@@ -84,49 +84,53 @@ function M.foreach(pos, fn)
   end
 end
 
-M.updating = false
-M.tries = 0
-M.max_tries = 10
+---@param fn fun(state:Edgy.UpdateState)
+---@param opts? {max_tries?:integer}
+function M.wrap(fn, opts)
+  opts = opts or {}
+  ---@class Edgy.UpdateState
+  local state = {
+    tries = 0,
+    max_tries = opts.max_tries or 10,
+  }
+  local run
+  run = function()
+    state.tries = state.tries + 1
 
-function M.update()
-  if M.updating then
-    return
-  end
+    vim.o.winminheight = 0
+    vim.o.winminwidth = 1
 
-  M.tries = M.tries + 1
-  M.updating = true
+    vim.o.eventignore = "all"
+    -- vim.g.minianimate_disable = true
 
-  local sk = vim.o.splitkeep
-  vim.o.splitkeep = "cursor"
-  vim.o.winminheight = 0
-  vim.o.winminwidth = 1
+    -- Don't do anything related to splitkeep while updating
+    local sk = vim.o.splitkeep
+    vim.o.splitkeep = "cursor"
 
-  vim.o.eventignore = "all"
+    local ok, err = pcall(fn, state)
 
-  -- Don't do anything related to splitkeep while updating
-  -- local splitkeep = vim.o.splitkeep
-  -- vim.o.splitkeep = "cursor"
-
-  local ok, err = pcall(M._update)
-
-  if ok then
-    M.tries = 0
-  else
-    if M.tries >= M.max_tries or Config.debug then
-      Util.error(err)
+    if ok then
+      state.tries = 0
+    else
+      if state.tries >= state.max_tries or Config.debug then
+        Util.error(err)
+      end
+      if state.tries < state.max_tries then
+        vim.schedule(function()
+          run()
+        end)
+      end
     end
-    if M.tries < M.max_tries then
-      vim.schedule(M.update)
-    end
-  end
 
-  -- vim.o.splitkeep = splitkeep
-  vim.o.eventignore = ""
-  vim.o.splitkeep = sk
-  M.updating = false
+    vim.o.eventignore = ""
+    vim.o.splitkeep = sk
+    -- vim.g.minianimate_disable = false
+  end
+  return run
 end
 
-function M._update()
+---@param state Edgy.UpdateState
+function M._layout(state)
   ---@type table<string, number[]>
   local wins = {}
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
@@ -143,12 +147,15 @@ function M._update()
   end)
 
   -- Layout the sidebars when needed
-  if M.tries > 1 or M.needs_layout() then
+  if state.tries > 1 or M.needs_layout() then
     M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
       sidebar:layout(wins)
     end)
+    return true
   end
+end
 
+function M._resize()
   -- Resize the sidebar windows
   M.foreach({ "left", "right", "bottom", "top" }, function(sidebar)
     sidebar:resize()
@@ -158,5 +165,18 @@ function M._update()
     sidebar:state_restore()
   end
 end
+
+M.resize = Util.throttle(M.wrap(M._resize), 300)
+
+M.update = M.wrap(function(state)
+  if M._layout(state) then
+    -- layout was updated, so resize
+    -- the windows immediately
+    M._resize()
+  else
+    -- schedule a resize
+    M.resize()
+  end
+end)
 
 return M

@@ -206,21 +206,28 @@ function M:resize()
   end
 end
 
+-- Save window state.
+-- For hidden windows, save the previous state.
 function M:state_save()
+  local prev_state = self.state
   self.state = {}
   for _, win in ipairs(self.wins) do
-    vim.api.nvim_win_call(win.win, function()
-      self.state[win.win] = vim.fn.winsaveview()
-    end)
+    if win.visible or not prev_state[win.win] then
+      vim.api.nvim_win_call(win.win, function()
+        self.state[win.win] = vim.fn.winsaveview()
+      end)
+    else
+      self.state[win.win] = prev_state[win.win]
+    end
   end
 end
 
 function M:state_restore()
   for _, win in ipairs(self.wins) do
     local state = self.state[win.win]
-    if state then
+    if state and win.visible then
       vim.api.nvim_win_call(win.win, function()
-        vim.fn.winrestview(state)
+        vim.fn.winrestview({ topline = state.topline })
       end)
     end
   end
