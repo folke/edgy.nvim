@@ -1,9 +1,6 @@
 local M = {}
 
 function M.try(fn)
-  if package.loaded["lazy.core.util"] then
-    return require("lazy.core.util").try(fn)
-  end
   local ok, err = pcall(fn)
   if not ok then
     M.error(err)

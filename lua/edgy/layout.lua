@@ -1,4 +1,5 @@
 local Util = require("edgy.util")
+local Config = require("edgy.config")
 
 local M = {}
 
@@ -39,7 +40,6 @@ function M.get(pos, node, wins)
 end
 
 function M.needs_layout()
-  local Config = require("edgy.config")
   local done = {}
   for _, pos in ipairs({ "left", "right", "bottom", "top" }) do
     local sidebar = Config.layout[pos]
@@ -86,11 +86,15 @@ function M.foreach(pos, fn)
 end
 
 M.updating = false
+M.tries = 0
+M.max_tries = 10
+
 function M.update()
   if M.updating then
     return
   end
 
+  M.tries = M.tries + 1
   M.updating = true
 
   vim.o.winminheight = 0
@@ -102,7 +106,18 @@ function M.update()
   -- local splitkeep = vim.o.splitkeep
   -- vim.o.splitkeep = "cursor"
 
-  Util.try(M._update)
+  local ok, err = pcall(M._update)
+
+  if ok then
+    M.tries = 0
+  else
+    if M.tries >= M.max_tries or Config.debug then
+      Util.error(err)
+    end
+    if M.tries < M.max_tries then
+      vim.schedule(M.update)
+    end
+  end
 
   -- vim.o.splitkeep = splitkeep
   vim.o.eventignore = ""
@@ -126,7 +141,7 @@ function M._update()
   end)
 
   -- Layout the sidebars when needed
-  if M.needs_layout() then
+  if M.tries > 1 or M.needs_layout() then
     M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
       sidebar:layout(wins)
     end)

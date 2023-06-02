@@ -1,4 +1,6 @@
 local View = require("edgy.view")
+local Config = require("edgy.config")
+local Util = require("edgy.util")
 
 ---@class Edgy.Sidebar.Opts
 ---@field views (Edgy.View.Opts|string)[]
@@ -121,10 +123,10 @@ function M:layout()
       end
       local ok, err = pcall(vim.fn.win_splitmove, win, last, { vertical = not self.vertical })
       if not ok then
-        vim.notify("Edgy: Failed to layout windows.\n" .. err .. "\n" .. vim.inspect({
+        error("Edgy: Failed to layout windows.\n" .. err .. "\n" .. vim.inspect({
           win = vim.bo[vim.api.nvim_win_get_buf(win)].ft,
           last = vim.bo[vim.api.nvim_win_get_buf(last)].ft,
-        }), vim.log.levels.ERROR, { title = "edgy.nvim" })
+        }))
       end
     end
     last = win

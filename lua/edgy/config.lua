@@ -19,6 +19,7 @@ local defaults = {
     spell = false,
     signcolumn = "no",
   },
+  debug = true,
 }
 
 ---@type Edgy.Config
