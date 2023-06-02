@@ -44,7 +44,7 @@ function M.needs_layout()
   for _, pos in ipairs({ "left", "right", "bottom", "top" }) do
     local sidebar = Config.layout[pos]
     if sidebar and #sidebar.wins > 0 then
-      local wins = vim.tbl_map(function(w)
+      local needed = vim.tbl_map(function(w)
         return w.win
       end, sidebar.wins)
 
@@ -52,13 +52,26 @@ function M.needs_layout()
         return not vim.tbl_contains(done, w)
       end, M.get(pos))
 
-      vim.list_extend(done, wins)
-      if not vim.deep_equal(wins, found) then
+      vim.list_extend(done, needed)
+      if not vim.deep_equal(needed, found) then
+        -- dd(pos, { needed = M.debug(needed), found = M.debug(found) })
         return true
       end
     end
   end
   return false
+end
+
+---@param wins window[]
+function M.debug(wins)
+  return vim.tbl_map(function(w)
+    local buf = vim.api.nvim_win_get_buf(w)
+    local name = vim.bo[buf].filetype
+    if name == "" then
+      name = vim.api.nvim_buf_get_name(buf)
+    end
+    return w .. " " .. name
+  end, wins)
 end
 
 ---@param pos Edgy.Pos[]
