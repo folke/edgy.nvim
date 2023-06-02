@@ -2,6 +2,7 @@ local Window = require("edgy.window")
 
 ---@class Edgy.View.Opts
 ---@field ft string
+---@field filter? fun(win:window):boolean?
 ---@field title? string
 ---@field size? Edgy.Size
 ---@field winbar? boolean
@@ -37,7 +38,9 @@ function M:update(wins)
   end
   self.wins = {}
   for _, win in ipairs(wins) do
-    self.wins[#self.wins + 1] = index[win] or Window.new(win, self)
+    if not self.filter or self.filter(win) then
+      self.wins[#self.wins + 1] = index[win] or Window.new(win, self)
+    end
   end
   return #self.wins
 end

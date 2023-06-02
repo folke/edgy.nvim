@@ -79,6 +79,14 @@ function M:update(wins)
   local visible = 0
   for _, view in ipairs(self.views) do
     visible = visible + view:update(wins[view.ft] or {})
+    wins[view.ft] = vim.tbl_filter(function(w)
+      for _, win in ipairs(view.wins) do
+        if win.win == w then
+          return false
+        end
+      end
+      return true
+    end, wins[view.ft] or {})
   end
   self.wins = {}
   for _, view in ipairs(self.views) do
