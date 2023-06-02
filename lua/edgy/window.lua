@@ -95,7 +95,7 @@ end
 
 function M:goto_main()
   for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if not M.cache[w] and w ~= self.win then
+    if not M.cache[w] and w ~= self.win and vim.api.nvim_win_get_config(w).relative == "" then
       vim.api.nvim_set_current_win(w)
       break
     end
