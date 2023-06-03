@@ -120,7 +120,7 @@ function M.wrap(fn, opts)
 
     -- Don't do anything related to splitkeep while updating
     local sk = vim.o.splitkeep
-    vim.o.splitkeep = "cursor"
+    -- vim.o.splitkeep = "cursor"
 
     local ok, err = pcall(fn, state)
 
@@ -138,7 +138,7 @@ function M.wrap(fn, opts)
     end
 
     vim.o.eventignore = ""
-    vim.o.splitkeep = sk
+    -- vim.o.splitkeep = sk
   end
   return run
 end
