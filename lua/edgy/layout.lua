@@ -39,6 +39,23 @@ function M.get(pos, node, wins)
   return wins
 end
 
+-- check that all windows have the same size in the given direction
+---@param pos Edgy.Pos
+---@param wins window[]
+function M.check_size(pos, wins)
+  local size = nil ---@type number?
+  for _, win in ipairs(wins) do
+    local s = pos == "left"
+      or pos == "right" and vim.api.nvim_win_get_width(win)
+      or vim.api.nvim_win_get_height(win)
+    size = size == nil and s or size
+    if size ~= s then
+      return false
+    end
+  end
+  return true
+end
+
 function M.needs_layout()
   local done = {}
   for _, pos in ipairs({ "left", "right", "bottom", "top" }) do
@@ -53,7 +70,7 @@ function M.needs_layout()
       end, M.get(pos))
 
       vim.list_extend(done, needed)
-      if not vim.deep_equal(needed, found) then
+      if not vim.deep_equal(needed, found) or not M.check_size(pos, found) then
         -- dd(pos, { needed = M.debug(needed), found = M.debug(found) })
         return true
       end
@@ -99,9 +116,7 @@ function M.wrap(fn, opts)
 
     vim.o.winminheight = 0
     vim.o.winminwidth = 1
-
     vim.o.eventignore = "all"
-    -- vim.g.minianimate_disable = true
 
     -- Don't do anything related to splitkeep while updating
     local sk = vim.o.splitkeep
@@ -124,7 +139,6 @@ function M.wrap(fn, opts)
 
     vim.o.eventignore = ""
     vim.o.splitkeep = sk
-    -- vim.g.minianimate_disable = false
   end
   return run
 end
