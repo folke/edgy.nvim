@@ -149,7 +149,7 @@ function M._layout(state)
   -- Layout the sidebars when needed
   if state.tries > 1 or M.needs_layout() then
     M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
-      sidebar:layout(wins)
+      sidebar:layout()
     end)
     return true
   end
@@ -166,7 +166,8 @@ function M._resize()
   end
 end
 
-M.resize = Util.throttle(M.wrap(M._resize), 300)
+-- M.resize = Util.throttle(M.wrap(M._resize), 300)
+M.resize = Util.debounce(M.wrap(M._resize), 50)
 
 M.update = M.wrap(function(state)
   if M._layout(state) then
