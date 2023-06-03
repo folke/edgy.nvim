@@ -49,4 +49,27 @@ function M.throttle(fn, ms)
   end
 end
 
+--- @generic F: function
+--- @param fn F
+--- @param ms? number
+--- @return F
+function M.debounce(fn, ms)
+  ms = ms or 50
+  local timer = assert(vim.loop.new_timer())
+  local waiting = 0
+  return function()
+    if timer:is_active() then
+      waiting = waiting + 1
+    else
+      waiting = 0
+      fn()
+    end
+    timer:start(ms, 0, function()
+      if waiting then
+        vim.schedule(fn) -- only execute if there are calls waiting
+      end
+    end)
+  end
+end
+
 return M
