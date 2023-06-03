@@ -28,7 +28,7 @@ local defaults = {
   keys = {
     q = "close",
     Q = "close_sidebar",
-    ["-"] = "hide",
+    ["<c-q>"] = "hide",
   },
   -- enable this on Neovim <= 0.10.0 to
   -- properly fold sidebar windows.

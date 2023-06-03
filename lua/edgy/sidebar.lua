@@ -198,9 +198,9 @@ function M:resize()
       updates[#updates + 1] = { win.view.title, changes }
     end
   end
-  if #updates > 0 then
-    -- dd("resize", updates)
-  end
+  -- if #updates > 0 then
+  --   dd("resize", updates)
+  -- end
 end
 
 -- Save window state.
