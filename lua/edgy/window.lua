@@ -1,5 +1,6 @@
 local Util = require("edgy.util")
 local Config = require("edgy.config")
+local Editor = require("edgy.editor")
 
 ---@class Edgy.Window
 ---@field visible boolean
@@ -39,12 +40,12 @@ function M.new(win, view)
     wo.winbar = ""
   end
   for k, v in pairs(wo) do
-    vim.wo[win][k] = v
+    vim.api.nvim_set_option_value(k, v, { scope = "local", win = win })
   end
   vim.api.nvim_create_autocmd("WinClosed", {
     callback = function(event)
       if tonumber(event.match) == self.win then
-        self:goto_main()
+        Editor:goto_main()
         return true
       end
     end,
@@ -70,7 +71,7 @@ function M:show(visibility)
   end
 
   if not self.visible and vim.api.nvim_get_current_win() == self.win then
-    self:goto_main()
+    Editor:goto_main()
   end
 
   if not self.visible then
@@ -87,7 +88,7 @@ function M:open()
   end
   self.opening = true
   vim.schedule(function()
-    self:goto_main()
+    Editor:goto_main()
     if type(self.view.open) == "function" then
       Util.try(self.view.open)
     elseif type(self.view.open) == "string" then
@@ -98,15 +99,6 @@ function M:open()
       Util.error("View is pinned and has no open function")
     end
   end)
-end
-
-function M:goto_main()
-  for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if not M.cache[w] and w ~= self.win and vim.api.nvim_win_get_config(w).relative == "" then
-      vim.api.nvim_set_current_win(w)
-      break
-    end
-  end
 end
 
 function M:is_pinned()

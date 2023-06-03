@@ -1,4 +1,5 @@
 local Window = require("edgy.window")
+local Editor = require("edgy.editor")
 
 ---@class Edgy.View.Opts
 ---@field ft string
@@ -79,7 +80,7 @@ end
 function M:hide_pinned()
   if self.pinned_win and vim.api.nvim_win_is_valid(self.pinned_win.win) then
     if self.pinned_win.win == vim.api.nvim_get_current_win() then
-      self.pinned_win:goto_main()
+      Editor:goto_main()
     end
     vim.api.nvim_win_close(self.pinned_win.win, true)
     self.pinned_win = nil
