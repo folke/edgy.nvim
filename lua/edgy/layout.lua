@@ -130,7 +130,7 @@ function M.wrap(fn, opts)
 end
 
 ---@param state Edgy.UpdateState
-function M._layout(state)
+local function layout(state)
   ---@type table<string, number[]>
   local wins = {}
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
@@ -155,25 +155,26 @@ function M._layout(state)
   end
 end
 
-function M._resize()
+local function resize()
   -- Resize the sidebar windows
   M.foreach({ "left", "right", "bottom", "top" }, function(sidebar)
     sidebar:resize()
   end)
 
+  -- restore window state (topline)
   for _, sidebar in pairs(Config.layout) do
     sidebar:state_restore()
   end
 end
 
 -- M.resize = Util.throttle(M.wrap(M._resize), 300)
-M.resize = Util.debounce(M.wrap(M._resize), 50)
+M.resize = Util.debounce(M.wrap(resize), 50)
 
 M.update = M.wrap(function(state)
-  if M._layout(state) then
+  if layout(state) then
     -- layout was updated, so resize
     -- the windows immediately
-    M._resize()
+    resize()
   else
     -- schedule a resize
     M.resize()
