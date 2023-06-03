@@ -10,7 +10,7 @@ local defaults = {
     closed = " ",
     open = " ",
   },
-  hacks = true,
+  -- global window options for sidebar windows
   ---@type vim.wo
   wo = {
     winbar = true,
@@ -20,7 +20,20 @@ local defaults = {
     spell = false,
     signcolumn = "no",
   },
-  debug = true,
+  -- buffer-local keymaps to be added to sidebar buffers
+  -- values can be an action (see edgy.actions)
+  -- or a function that takes a window.
+  -- Existing buffer-local keymaps will never be overridden.
+  ---@type table<string, string|fun(win:Edgy.Window)>
+  keys = {
+    q = "close",
+    Q = "close_sidebar",
+    ["-"] = "hide",
+  },
+  -- enable this on Neovim <= 0.10.0 to
+  -- properly fold sidebar windows.
+  hacks = true,
+  debug = false,
 }
 
 ---@type Edgy.Config

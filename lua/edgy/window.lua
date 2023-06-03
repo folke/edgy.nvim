@@ -50,6 +50,7 @@ function M.new(win, view)
       end
     end,
   })
+  require("edgy.actions").setup(self)
   return self
 end
 

@@ -115,4 +115,17 @@ function M.is_floating(win)
   return vim.api.nvim_win_get_config(win).relative ~= ""
 end
 
+---@param win? window
+function M.get_win(win)
+  local Config = require("edgy.config")
+  win = win or vim.api.nvim_get_current_win()
+  for _, sidebar in pairs(Config.layout) do
+    for _, w in ipairs(sidebar.wins) do
+      if w.win == win then
+        return w
+      end
+    end
+  end
+end
+
 return M
