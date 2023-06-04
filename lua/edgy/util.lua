@@ -26,6 +26,44 @@ function M.warn(msg)
   M.notify(msg, vim.log.levels.WARN)
 end
 
+---@generic F: fun()
+---@param fn F
+---@param max_retries? number
+---@return F
+function M.with_retry(fn, max_retries)
+  max_retries = max_retries or 3
+  local retries = 0
+  local function try()
+    local ok, ret = pcall(fn)
+    if ok then
+      retries = 0
+    else
+      if retries >= max_retries or require("edgy.config").debug then
+        M.error(ret)
+      end
+      if retries < max_retries then
+        return vim.schedule(try)
+      end
+    end
+  end
+  return try
+end
+
+---@generic F: fun()
+---@param fn F
+---@return F
+function M.noautocmd(fn)
+  return function(...)
+    vim.o.eventignore = "all"
+    local ok, ret = pcall(fn, ...)
+    vim.o.eventignore = ""
+    if not ok then
+      error(ret)
+    end
+    return ret
+  end
+end
+
 --- @generic F: function
 --- @param fn F
 --- @param ms? number
