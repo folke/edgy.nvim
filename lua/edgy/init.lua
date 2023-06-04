@@ -10,9 +10,7 @@ function M.close(pos)
   local Config = require("edgy.config")
   for p, sidebar in pairs(Config.layout) do
     if p == pos or pos == nil then
-      for _, win in ipairs(sidebar.wins) do
-        pcall(vim.api.nvim_win_close, win.win, true)
-      end
+      sidebar:close()
     end
   end
 end
