@@ -10,9 +10,13 @@ bringing a new edge to your workflow.
 - 🔄 Automatically move windows (including floating windows) in a pre-defined layout
 - 📐 Manage layouts while keeping your main editor splits untouched.
 - 🔧 Personalize **edgebar** window options to fit your style.
-- 📌 Pinned views for easy access, even when they're collapsed or lack a window.
+- 📌 Pinned views are always shown in the sidebar even when they have no windows.
 - ⌨️ Make navigation easier with personalized buffer-local _keymaps_ for **edgebar** windows.
 - 🎆 Pretty animations (works well with [mini.animate](https://github.com/echasnovski/mini.animate))
+- 🧩 Works with any plugin. Check [Show and Tell](https://github.com/folke/edgy.nvim/discussions/categories/show-and-tell)
+  for snippets to integrate even better
+  with plugins like [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim),
+  [bufferline.nvim](https://github.com/akinsho/bufferline.nvim)
 
 ## 📦 Installation
 
