@@ -1,5 +1,6 @@
 local View = require("edgy.view")
 local Util = require("edgy.util")
+local Editor = require("edgy.editor")
 
 ---@class Edgy.Sidebar.Opts
 ---@field views (Edgy.View.Opts|string)[]
@@ -42,17 +43,16 @@ end
 ---@return Edgy.Sidebar
 function M.new(pos, opts)
   local vertical = pos == "left" or pos == "right"
-  local self = setmetatable({
-    pos = pos,
-    views = {},
-    size = opts.size or vertical and 30 or 10,
-    vertical = vertical,
-    wins = {},
-    visible = 0,
-    state = {},
-    wo = opts.wo,
-    dirty = true,
-  }, M)
+  local self = setmetatable({}, M)
+  self.pos = pos
+  self.views = {}
+  self.size = opts.size or vertical and 30 or 10
+  self.vertical = vertical
+  self.wins = {}
+  self.visible = 0
+  self.state = {}
+  self.wo = opts.wo
+  self.dirty = true
   for _, v in ipairs(opts.views) do
     v = type(v) == "string" and { ft = v } or v
     ---@cast v Edgy.View.Opts
@@ -80,6 +80,39 @@ function M:on_win_enter()
   })
 end
 
+---@param win Edgy.Window
+function M:on_hide(win)
+  if not win:is_valid() or vim.api.nvim_get_current_win() == win.win then
+    Editor:goto_main()
+  end
+  local visible = 0
+  local pinned = 0
+  local real = {}
+  for _, w in ipairs(self.wins) do
+    if w:is_valid() then
+      visible = visible + (w.visible and 1 or 0)
+      if w:is_pinned() then
+        pinned = pinned + 1
+      else
+        table.insert(real, w)
+      end
+    end
+  end
+  if visible > 0 then
+    return
+  end
+  if #real == 0 then
+    self:close()
+  end
+
+  table.sort(real, function(a, b)
+    local da = a == win and math.huge or math.abs(a.idx - win.idx)
+    local db = b == win and math.huge or math.abs(b.idx - win.idx)
+    return da < db or da == db and a.idx < b.idx
+  end)
+  real[1]:show()
+end
+
 ---@param wins table<string, number[]>
 function M:update(wins)
   self.visible = 0
@@ -102,11 +135,10 @@ function M:_update(opts)
   self.wins = {}
   for _, view in ipairs(self.views) do
     view:layout(opts)
-    vim.list_extend(self.wins, view.wins)
-  end
-  for w, win in ipairs(self.wins) do
-    win.prev = self.wins[w - 1]
-    win.next = self.wins[w + 1]
+    for _, win in ipairs(view.wins) do
+      table.insert(self.wins, win)
+      win.idx = #self.wins
+    end
   end
 end
 

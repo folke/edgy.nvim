@@ -8,9 +8,8 @@ local Editor = require("edgy.editor")
 ---@field win window
 ---@field width? number
 ---@field height? number
----@field next? Edgy.Window
----@field prev? Edgy.Window
 ---@field opening boolean
+---@field idx integer
 local M = {}
 M.__index = M
 
@@ -20,11 +19,11 @@ M.cache = setmetatable({}, { __mode = "v" })
 ---@param win window
 ---@param view Edgy.View
 function M.new(win, view)
-  local self = setmetatable({
-    visible = true,
-    view = view,
-    win = win,
-  }, M)
+  local self = setmetatable({}, M)
+  self.visible = true
+  self.view = view
+  self.idx = 1
+  self.win = win
   M.cache[win] = self
   self.opening = false
 
@@ -45,7 +44,7 @@ function M.new(win, view)
   vim.api.nvim_create_autocmd("WinClosed", {
     callback = function(event)
       if tonumber(event.match) == self.win then
-        Editor:goto_main()
+        self.view.sidebar:on_hide(self)
         return true
       end
     end,
@@ -62,21 +61,12 @@ end
 function M:show(visibility)
   self.visible = visibility == nil and true or visibility or false
   if self.visible and self:is_pinned() then
-    self.visible = false
+    -- self.visible = false
     return self:open()
   end
 
-  if not self.visible and not self.prev and not self.next then
-    self.visible = true
-    return
-  end
-
-  if not self.visible and vim.api.nvim_get_current_win() == self.win then
-    Editor:goto_main()
-  end
-
   if not self.visible then
-    self:ensure_one_visible()
+    self.view.sidebar:on_hide(self)
   end
 
   vim.cmd([[redrawstatus!]])
@@ -104,34 +94,6 @@ end
 
 function M:is_pinned()
   return self.view.pinned_win == self
-end
-
-function M:ensure_one_visible()
-  if self:sibling(function(w)
-    return w.visible
-  end) then
-    return
-  end
-  if self.prev and not self.prev:is_pinned() then
-    self.prev:show()
-  elseif self.next and not self.next:is_pinned() then
-    self.next:show()
-  end
-end
-
----@param filter fun(win:Edgy.Window):boolean?
----@param dir? "next" | "prev"
-function M:sibling(filter, dir)
-  if not dir then
-    return self:sibling(filter, "next") or self:sibling(filter, "prev")
-  end
-  local sibling = self[dir]
-  while sibling do
-    if filter(sibling) then
-      return sibling
-    end
-    sibling = sibling[dir]
-  end
 end
 
 function M:toggle()
