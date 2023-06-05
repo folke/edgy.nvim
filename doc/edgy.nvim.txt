@@ -74,6 +74,13 @@ CONFIGURATION                         *edgy.nvim-🪟-edgy.nvim-configuration*
         on_end = function()
           vim.g.minianimate_disable = false
         end,
+        -- Spinner for pinned views that are loading.
+        -- if you have noice.nvim installed, you can use any spinner from it, like:
+        -- spinner = require("noice.util.spinners").spinners.circleFull,
+        spinner = {
+          frames = { "", "", "", "", "", "", "", "", "", "" },
+          interval = 80,
+        },
       },
       -- global window options for sidebar windows
       ---@type vim.wo
