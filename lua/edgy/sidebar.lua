@@ -22,6 +22,8 @@ local wincmds = {
 ---@field state table<window,any>
 ---@field wo? vim.wo
 ---@field dirty boolean
+---@field visible number
+---@field stop boolean
 local M = {}
 M.__index = M
 
@@ -46,6 +48,7 @@ function M.new(pos, opts)
     size = opts.size or vertical and 30 or 10,
     vertical = vertical,
     wins = {},
+    visible = 0,
     state = {},
     wo = opts.wo,
     dirty = true,
@@ -79,9 +82,9 @@ end
 
 ---@param wins table<string, number[]>
 function M:update(wins)
-  local visible = 0
+  self.visible = 0
   for _, view in ipairs(self.views) do
-    visible = visible + view:update(wins[view.ft] or {})
+    self.visible = self.visible + view:update(wins[view.ft] or {})
     wins[view.ft] = vim.tbl_filter(function(w)
       for _, win in ipairs(view.wins) do
         if win.win == w then
@@ -91,13 +94,14 @@ function M:update(wins)
       return true
     end, wins[view.ft] or {})
   end
+  self:_update({ check = true })
+end
+
+---@param opts? {check: boolean}
+function M:_update(opts)
   self.wins = {}
   for _, view in ipairs(self.views) do
-    if visible > 0 then
-      view:check_pinned()
-    else
-      view:hide_pinned()
-    end
+    view:layout(opts)
     vim.list_extend(self.wins, view.wins)
   end
   for w, win in ipairs(self.wins) do
@@ -107,9 +111,19 @@ function M:update(wins)
 end
 
 function M:layout()
+  if self.stop then
+    return
+  end
   if vim.v.exiting ~= vim.NIL then
     return
   end
+  if not (self.dirty or #self.wins > 0) then
+    return
+  end
+  if self.dirty then
+    self:_update()
+  end
+
   self.dirty = true
   ---@type number?
   local last

@@ -46,12 +46,25 @@ function M:update(wins)
   return #self.wins
 end
 
-function M:check_pinned()
-  if not self.pinned or #self.wins > 0 then
-    self:hide_pinned()
-    return
+---@param opts? {check: boolean}
+function M:layout(opts)
+  if #self.wins == 1 and self.wins[1] == self.pinned_win then
+    self.wins = {}
   end
+  if self.sidebar.visible > 0 and self.pinned and #self.wins == 0 then
+    self:show_pinned(opts)
+  else
+    self:hide_pinned(opts)
+  end
+end
+
+---@param opts? {check: boolean}
+function M:show_pinned(opts)
   if not (self.pinned_win and vim.api.nvim_win_is_valid(self.pinned_win.win)) then
+    if opts and opts.check then
+      self.sidebar.dirty = true
+      return
+    end
     local buf = vim.api.nvim_create_buf(false, true)
     vim.bo[buf].buftype = "nofile"
     vim.bo[buf].bufhidden = "wipe"
@@ -77,8 +90,13 @@ function M:check_pinned()
   self.wins[1].visible = false
 end
 
-function M:hide_pinned()
+---@param opts? {check: boolean}
+function M:hide_pinned(opts)
   if self.pinned_win and vim.api.nvim_win_is_valid(self.pinned_win.win) then
+    if opts and opts.check then
+      self.sidebar.dirty = true
+      return
+    end
     if self.pinned_win.win == vim.api.nvim_get_current_win() then
       Editor:goto_main()
     end

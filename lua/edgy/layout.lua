@@ -60,10 +60,10 @@ function M.needs_layout()
   local done = {}
   for _, pos in ipairs({ "left", "right", "bottom", "top" }) do
     local sidebar = Config.layout[pos]
+    if sidebar and sidebar.dirty then
+      return true
+    end
     if sidebar and #sidebar.wins > 0 then
-      if sidebar.dirty then
-        return true
-      end
       local needed = vim.tbl_map(function(w)
         return w.win
       end, sidebar.wins)
@@ -133,16 +133,6 @@ local function update()
   end)
 end
 
-function M.animate()
-  local count = 0
-  M.foreach({ "left", "right", "bottom", "top" }, function(sidebar)
-    count = sidebar:animate() and count + 1 or count
-  end)
-  if count > 0 then
-    vim.defer_fn(M.animate, 10)
-  end
-end
-
 ---@param opts? {full: boolean}
 function M.layout(opts)
   opts = opts or {}
@@ -153,12 +143,13 @@ function M.layout(opts)
     return false
   end
 
-  save_state()
-
   if opts.full then
     M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
       sidebar:layout()
     end)
+  else
+    -- only save state if the layout is intact
+    save_state()
   end
 
   M.foreach({ "left", "right", "bottom", "top" }, function(sidebar)
