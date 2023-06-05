@@ -6,8 +6,8 @@ local Editor = require("edgy.editor")
 ---@field visible boolean
 ---@field view Edgy.View
 ---@field win window
----@field width number
----@field height number
+---@field width? number
+---@field height? number
 ---@field next? Edgy.Window
 ---@field prev? Edgy.Window
 ---@field opening boolean
@@ -80,7 +80,7 @@ function M:show(visibility)
   end
 
   vim.cmd([[redrawstatus!]])
-  require("edgy.layout").update()
+  self.view.sidebar:resize()
 end
 
 function M:open()
@@ -156,6 +156,7 @@ function M:resize()
   if not self:is_valid() then
     return
   end
+
   local changes = {}
   for _, key in ipairs({ "width", "height" }) do
     local current = vim.api["nvim_win_get_" .. key](self.win)
