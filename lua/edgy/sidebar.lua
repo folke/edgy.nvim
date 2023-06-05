@@ -20,6 +20,7 @@ local wincmds = {
 ---@field vertical boolean
 ---@field state table<window,any>
 ---@field wo? vim.wo
+---@field dirty boolean
 local M = {}
 M.__index = M
 
@@ -46,6 +47,7 @@ function M.new(pos, opts)
     wins = {},
     state = {},
     wo = opts.wo,
+    dirty = true,
   }, M)
   for _, v in ipairs(opts.views) do
     v = type(v) == "string" and { ft = v } or v
@@ -104,31 +106,33 @@ function M:update(wins)
 end
 
 function M:layout()
+  if vim.v.exiting ~= vim.NIL then
+    return
+  end
+  self.dirty = true
   ---@type number?
   local last
   for _, w in ipairs(self.wins) do
-    local win = w.win
-    if not last then
-      vim.api.nvim_win_call(win, function()
+    -- move first window to the sidebar position
+    -- and make floating windows normal windows
+    if not last or vim.api.nvim_win_get_config(w.win).relative ~= "" then
+      vim.api.nvim_win_call(w.win, function()
         vim.cmd("wincmd " .. wincmds[self.pos])
       end)
-    else
-      -- make floating windows normal windows
-      if vim.api.nvim_win_get_config(win).relative ~= "" then
-        vim.api.nvim_win_call(win, function()
-          vim.cmd("wincmd " .. wincmds[self.pos])
-        end)
-      end
-      local ok, err = pcall(vim.fn.win_splitmove, win, last, { vertical = not self.vertical })
+    end
+    -- move other windows to the end of the sidebar
+    if last then
+      local ok, err = pcall(vim.fn.win_splitmove, w.win, last, { vertical = not self.vertical })
       if not ok then
         error("Edgy: Failed to layout windows.\n" .. err .. "\n" .. vim.inspect({
-          win = vim.bo[vim.api.nvim_win_get_buf(win)].ft,
+          win = vim.bo[vim.api.nvim_win_get_buf(w.win)].ft,
           last = vim.bo[vim.api.nvim_win_get_buf(last)].ft,
         }))
       end
     end
-    last = win
+    last = w.win
   end
+  self.dirty = false
 end
 
 function M:resize()
