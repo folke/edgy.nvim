@@ -111,6 +111,7 @@ Install the plugin with your preferred package manager:
   event = "VeryLazy",
   opts = {
     bottom = {
+      -- toggleterm / lazyterm at the bottom with a height of 40% of the screen
       { ft = "toggleterm", size = { height = 0.4 } },
       {
         ft = "lazyterm",
@@ -126,6 +127,7 @@ Install the plugin with your preferred package manager:
       { ft = "spectre_panel", size = { height = 0.4 } },
     },
     left = {
+      -- Neo-tree filesystem always takes half the screen height
       {
         title = "Neo-Tree",
         ft = "neo-tree",
@@ -157,6 +159,7 @@ Install the plugin with your preferred package manager:
         pinned = true,
         open = "SymbolsOutline",
       },
+      -- any other neo-tree windows
       "neo-tree",
     },
   },
