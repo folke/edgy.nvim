@@ -168,3 +168,22 @@ Install the plugin with your preferred package manager:
   },
 }
 ```
+
+## 🚀 Usage
+
+Just open windows/buffers as you normally do, but now they will be displayed
+in your layout.
+
+### API
+
+- `require("edgy").close(pos?)` close all sidebars or a sidebar in the given position
+
+## 🐯 Tips & tricks
+
+- disable edgy for a window/buffer by setting `vim.b[buf].edgy_disable`
+  or `vim.w[win].edgy_disable`. You can even set this after the facts.
+  Edgy will then expunge the window from the layout.
+
+- check the [Show and Tell](https://github.com/folke/edgy.nvim/discussions/categories/show-and-tell)
+  section of the github discussions for more tips like integrations
+  with other plugins.
