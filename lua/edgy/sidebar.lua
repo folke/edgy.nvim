@@ -1,6 +1,7 @@
 local View = require("edgy.view")
 local Util = require("edgy.util")
 local Editor = require("edgy.editor")
+local Config = require("edgy.config")
 
 ---@class Edgy.Sidebar.Opts
 ---@field views (Edgy.View.Opts|string)[]
@@ -246,12 +247,16 @@ function M:resize()
     end
   end
 
-  -- resize windows
-  local updates = {}
-  for _, win in ipairs(self.wins) do
-    local changes = win:resize()
-    if not vim.tbl_isempty(changes) then
-      updates[#updates + 1] = { win.view.title, changes }
+  if Config.animate.enabled then
+    require("edgy.animate").update()
+  else
+    -- resize windows
+    local updates = {}
+    for _, win in ipairs(self.wins) do
+      local changes = win:resize()
+      if not vim.tbl_isempty(changes) then
+        updates[#updates + 1] = { win.view.title, changes }
+      end
     end
   end
   -- if #updates > 0 then

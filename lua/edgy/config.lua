@@ -1,3 +1,5 @@
+---@class EdgyConfig: Edgy.Config
+---@field layout table<Edgy.Pos, Edgy.Sidebar>
 local M = {}
 
 ---@alias Edgy.Pos "bottom"|"top"|"left"|"right"
@@ -9,6 +11,17 @@ local defaults = {
   icons = {
     closed = " ",
     open = " ",
+  },
+  animate = {
+    enabled = true,
+    fps = 100, -- frames per second
+    cps = 120, -- cells per second
+    on_begin = function()
+      vim.g.minianimate_disable = true
+    end,
+    on_end = function()
+      vim.g.minianimate_disable = false
+    end,
   },
   -- global window options for sidebar windows
   ---@type vim.wo
