@@ -240,11 +240,11 @@ function M:state_restore()
 end
 
 function M:close()
-  vim.o.eventignore = "all"
   for _, win in ipairs(self.wins) do
     pcall(vim.api.nvim_win_close, win.win, true)
   end
-  vim.o.eventignore = ""
 end
+
+M.close = Util.noautocmd(M.close)
 
 return M
