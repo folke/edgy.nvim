@@ -110,6 +110,23 @@ Install the plugin with your preferred package manager:
 | **open**     | `fun()` or `string`            | Function or command to open a pinned view                                                                   |
 | **wo**       | `vim.wo?`                      | View-specific window options                                                                                |
 
+## 🚀 Usage
+
+Just open windows/buffers as you normally do, but now they will be displayed
+in your layout.
+
+### ⌨️ Keymaps for Edgebar Windows
+
+| **Keymap** | **Description**   |
+| ---------- | ----------------- |
+| `q`        | Close the window  |
+| `<c-q>`    | Hide the window   |
+| `Q`        | Close the sidebar |
+
+### 🔌 API
+
+- `require("edgy").close(pos?)` close all sidebars or a sidebar in the given position
+
 ## 🪟 Example Setup
 
 ```lua
@@ -172,15 +189,6 @@ Install the plugin with your preferred package manager:
   },
 }
 ```
-
-## 🚀 Usage
-
-Just open windows/buffers as you normally do, but now they will be displayed
-in your layout.
-
-### API
-
-- `require("edgy").close(pos?)` close all sidebars or a sidebar in the given position
 
 ## 🐯 Tips & tricks
 
