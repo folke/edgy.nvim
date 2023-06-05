@@ -60,7 +60,7 @@ local defaults = {
   },
   -- enable this on Neovim <= 0.10.0 to properly fold sidebar windows.
   -- Not needed on a nightly build >= June 5, 2023.
-  hacks = false,
+  fix_win_height = vim.fn.has("nvim-0.10.0") == 0,
   debug = false,
 }
 
@@ -86,7 +86,7 @@ function M.setup(opts)
     end
   end
 
-  if options.hacks then
+  if options.fix_win_height then
     require("edgy.hacks").setup()
   end
 
