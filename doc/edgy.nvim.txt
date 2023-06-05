@@ -7,8 +7,8 @@ Table of Contents                                *edgy.nvim-table-of-contents*
   - Features                               |edgy.nvim-🪟-edgy.nvim-features|
   - Installation                       |edgy.nvim-🪟-edgy.nvim-installation|
   - Configuration                     |edgy.nvim-🪟-edgy.nvim-configuration|
-  - 🪟 Example Setup           |edgy.nvim-🪟-edgy.nvim-🪟-example-setup|
   - Usage                                     |edgy.nvim-🪟-edgy.nvim-usage|
+  - 🪟 Example Setup           |edgy.nvim-🪟-edgy.nvim-🪟-example-setup|
   - Tips & tricks                     |edgy.nvim-🪟-edgy.nvim-tips-&-tricks|
 
 ==============================================================================
@@ -138,6 +138,25 @@ EDGY.VIEW.OPTS ~
   wo         vim.wo?                        View-specific window options
   --------------------------------------------------------------------------------------------
 
+USAGE                                         *edgy.nvim-🪟-edgy.nvim-usage*
+
+Just open windows/buffers as you normally do, but now they will be displayed in
+your layout.
+
+
+KEYMAPS FOR EDGEBAR WINDOWS ~
+
+  Keymap   Description
+  -------- -------------------
+  q        Close the window
+  <c-q>    Hide the window
+  Q        Close the sidebar
+
+API ~
+
+- `require("edgy").close(pos?)` close all sidebars or a sidebar in the given position
+
+
 🪟 EXAMPLE SETUP               *edgy.nvim-🪟-edgy.nvim-🪟-example-setup*
 
 >lua
@@ -200,17 +219,6 @@ EDGY.VIEW.OPTS ~
       },
     }
 <
-
-
-USAGE                                         *edgy.nvim-🪟-edgy.nvim-usage*
-
-Just open windows/buffers as you normally do, but now they will be displayed in
-your layout.
-
-
-API ~
-
-- `require("edgy").close(pos?)` close all sidebars or a sidebar in the given position
 
 
 TIPS & TRICKS                         *edgy.nvim-🪟-edgy.nvim-tips-&-tricks*
