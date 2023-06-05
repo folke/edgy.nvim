@@ -7,7 +7,7 @@ local M = {}
 ---@class Edgy.Animate
 ---@field height number
 ---@field width number
----@field steps number
+---@field view? table
 
 ---@type table<Edgy.Window, Edgy.Animate>
 M.state = setmetatable({}, { __mode = "k" })
@@ -25,6 +25,7 @@ function M.get_state(win)
     M.state[win] = {
       [long] = #sidebar.wins == 1 and bounds[long] or 1,
       [short] = #sidebar.wins == 1 and 1 or sidebar.size,
+      view = vim.api.nvim_win_call(win.win, vim.fn.winsaveview),
     }
     for _, w in ipairs(sidebar.wins) do
       M.state[win][short] = math.max(M.state[win][short], M.state[w] and M.state[w][short] or 0)
@@ -55,7 +56,22 @@ function M.step(win, step)
   return updated
 end
 
-function M.animate(step)
+---@param win Edgy.Window
+function M.check_view(win)
+  local state = M.get_state(win)
+  if
+    not state.view
+    or (
+      win.visible
+      and win.height == vim.api.nvim_win_get_height(win.win)
+      and win.width == vim.api.nvim_win_get_width(win.win)
+    )
+  then
+    state.view = vim.api.nvim_win_call(win.win, vim.fn.winsaveview)
+  end
+end
+
+function M.wins()
   local wins = {} ---@type Edgy.Window[]
   Layout.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
     for _, win in ipairs(sidebar.wins) do
@@ -64,24 +80,41 @@ function M.animate(step)
       end
     end
   end)
+  return wins
+end
 
-  local views = {}
+function M.restore_views(wins, full)
+  wins = wins or M.wins()
   for _, win in ipairs(wins) do
-    vim.api.nvim_win_call(win.win, function()
-      views[win.win] = vim.fn.winsaveview()
-    end)
+    local state = M.get_state(win)
+    if state.view then
+      vim.api.nvim_win_call(win.win, function()
+        if full then
+          vim.fn.winrestview(state.view)
+        else
+          vim.fn.winrestview({ topline = state.view.topline })
+        end
+      end)
+    end
   end
+end
+
+function M.animate(step)
+  local wins = M.wins()
+
+  for _, win in ipairs(wins) do
+    M.check_view(win)
+  end
+
   local updated = false
   for _, win in ipairs(wins) do
     if M.step(win, step) then
       updated = true
     end
   end
-  for win, view in ipairs(views) do
-    vim.api.nvim_win_call(win, function()
-      vim.fn.winrestview(view)
-    end)
-  end
+
+  M.restore_views(wins)
+
   return updated
 end
 
@@ -102,6 +135,7 @@ function M.schedule()
       if M.animate() then
         M.schedule()
       else
+        M.restore_views(nil, true)
         Config.animate.on_end()
       end
     end, 1000 / Config.animate.fps)
