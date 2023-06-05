@@ -113,12 +113,16 @@ function M:winbar()
   local parts = {}
 
   parts[#parts + 1] = "%" .. self.win .. "@v:lua.edgy_click@"
-  local icon_hl = self:is_pinned() and "EdgyIcon" or "EdgyIconActive"
-  parts[#parts + 1] = "%#"
-    .. icon_hl
-    .. "#"
-    .. (self.visible and Config.icons.open or Config.icons.closed)
-    .. "%*%<"
+  local icon_hl = self:is_pinned() and not self.opening and "EdgyIcon" or "EdgyIconActive"
+  local icon = self.visible and Config.icons.open or Config.icons.closed
+  if self.opening then
+    local spinner = Config.animate.spinner
+    local ms = vim.loop.hrtime() / 1000000
+    local frame = math.floor(ms / spinner.interval) % #spinner.frames
+    icon = spinner.frames[frame + 1]
+  end
+
+  parts[#parts + 1] = "%#" .. icon_hl .. "#" .. icon .. "%*%<"
   parts[#parts + 1] = "%#EdgyTitle# " .. self.view.title .. "%*"
   parts[#parts + 1] = "%T"
 
