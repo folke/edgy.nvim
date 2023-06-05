@@ -139,6 +139,11 @@ function M:resize()
   if #self.wins == 0 then
     return
   end
+
+  -- always override these options before resizing
+  vim.o.winminheight = 0
+  vim.o.winminwidth = 1
+
   local long = self.vertical and "height" or "width"
   local short = self.vertical and "width" or "height"
 
@@ -186,7 +191,7 @@ function M:resize()
   -- distribute free space to auto-sized windows,
   -- or fixed-sized windows when there are no auto-sized windows
   if free > 0 then
-    local _wins = #auto > 0 and auto or fixed
+    local _wins = #auto > 0 and auto or #fixed > 0 and fixed or self.wins
     local extra = math.ceil(free / #_wins)
     for _, win in ipairs(_wins) do
       win[long] = win[long] + math.min(extra, free)
