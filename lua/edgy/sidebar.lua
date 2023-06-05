@@ -1,4 +1,5 @@
 local View = require("edgy.view")
+local Util = require("edgy.util")
 
 ---@class Edgy.Sidebar.Opts
 ---@field views (Edgy.View.Opts|string)[]
@@ -214,7 +215,7 @@ end
 
 -- Save window state.
 -- For hidden windows, save the previous state.
-function M:state_save()
+function M:save_state()
   local prev_state = self.state
   self.state = {}
   for _, win in ipairs(self.wins) do
@@ -228,12 +229,12 @@ function M:state_save()
   end
 end
 
-function M:state_restore()
+function M:restore_state()
   for _, win in ipairs(self.wins) do
     local state = self.state[win.win]
     if state and win.visible then
       vim.api.nvim_win_call(win.win, function()
-        vim.fn.winrestview({ topline = state.topline })
+        vim.fn.winrestview({ topline = state.topline, leftcol = state.leftcol })
       end)
     end
   end

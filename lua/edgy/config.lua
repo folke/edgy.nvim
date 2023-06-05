@@ -32,7 +32,7 @@ local defaults = {
   },
   -- enable this on Neovim <= 0.10.0 to
   -- properly fold sidebar windows.
-  hacks = true,
+  hacks = false,
   debug = false,
 }
 

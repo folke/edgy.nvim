@@ -61,6 +61,9 @@ function M.needs_layout()
   for _, pos in ipairs({ "left", "right", "bottom", "top" }) do
     local sidebar = Config.layout[pos]
     if sidebar and #sidebar.wins > 0 then
+      if sidebar.dirty then
+        return true
+      end
       local needed = vim.tbl_map(function(w)
         return w.win
       end, sidebar.wins)
@@ -101,50 +104,20 @@ function M.foreach(pos, fn)
   end
 end
 
----@param fn fun(state:Edgy.UpdateState)
----@param opts? {max_tries?:integer}
-function M.wrap(fn, opts)
-  opts = opts or {}
-  ---@class Edgy.UpdateState
-  local state = {
-    tries = 0,
-    max_tries = opts.max_tries or 10,
-  }
-  local run
-  run = function()
-    state.tries = state.tries + 1
-
-    vim.o.winminheight = 0
-    vim.o.winminwidth = 1
-    vim.o.eventignore = "all"
-
-    -- Don't do anything related to splitkeep while updating
-    local sk = vim.o.splitkeep
-    -- vim.o.splitkeep = "cursor"
-
-    local ok, err = pcall(fn, state)
-
-    if ok then
-      state.tries = 0
-    else
-      if state.tries >= state.max_tries or Config.debug then
-        Util.error(err)
-      end
-      if state.tries < state.max_tries then
-        vim.schedule(function()
-          run()
-        end)
-      end
-    end
-
-    vim.o.eventignore = ""
-    -- vim.o.splitkeep = sk
-  end
-  return run
+local function save_state()
+  M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
+    sidebar:save_state()
+  end)
 end
 
----@param state Edgy.UpdateState
-local function layout(state)
+local function restore_state()
+  -- restore window state (topline)
+  for _, sidebar in pairs(Config.layout) do
+    sidebar:restore_state()
+  end
+end
+
+local function update()
   ---@type table<string, number[]>
   local wins = {}
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
@@ -157,42 +130,52 @@ local function layout(state)
   -- Update the windows in each sidebar
   M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
     sidebar:update(wins)
-    sidebar:state_save()
   end)
+end
 
-  -- Layout the sidebars when needed
-  if state.tries > 1 or M.needs_layout() then
-    M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
-      sidebar:layout()
-    end)
-    return true
+function M.animate()
+  local count = 0
+  M.foreach({ "left", "right", "bottom", "top" }, function(sidebar)
+    count = sidebar:animate() and count + 1 or count
+  end)
+  if count > 0 then
+    vim.defer_fn(M.animate, 10)
   end
 end
 
-local function resize()
-  -- Resize the sidebar windows
+---@param opts? {full: boolean}
+function M.layout(opts)
+  opts = opts or {}
+
+  update()
+
+  if opts.full and not M.needs_layout() then
+    return false
+  end
+
+  save_state()
+
+  if opts.full then
+    M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
+      sidebar:layout()
+    end)
+  end
+
   M.foreach({ "left", "right", "bottom", "top" }, function(sidebar)
     sidebar:resize()
   end)
 
-  -- restore window state (topline)
-  for _, sidebar in pairs(Config.layout) do
-    sidebar:state_restore()
-  end
+  restore_state()
+  return true
 end
 
 -- M.resize = Util.throttle(M.wrap(M._resize), 300)
-M.resize = Util.debounce(M.wrap(resize), 50)
+M.resize = Util.debounce(M.layout, 50)
 
-M.update = M.wrap(function(state)
-  if layout(state) then
-    -- layout was updated, so resize
-    -- the windows immediately
-    resize()
-  else
-    -- schedule a resize
+M.update = Util.with_retry(Util.noautocmd(function()
+  if not M.layout({ full = true }) then
     M.resize()
   end
-end)
+end))
 
 return M
