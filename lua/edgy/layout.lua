@@ -117,6 +117,7 @@ local function restore_state()
   end
 end
 
+---@return boolean changed whether the layout changed
 local function update()
   ---@type table<string, number[]>
   local wins = {}
@@ -128,23 +129,30 @@ local function update()
       table.insert(wins[ft], win)
     end
   end
+
+  local changed = false
   -- Update the windows in each sidebar
   M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
-    sidebar:update(wins)
+    if sidebar:update(wins) then
+      changed = true
+    end
   end)
+  return changed
 end
 
 ---@param opts? {full: boolean}
 function M.layout(opts)
   opts = opts or {}
 
-  update()
+  local changed = update()
+  local needs_layout = M.needs_layout()
 
-  if opts.full and not M.needs_layout() then
+  if opts.full and not (changed or needs_layout) then
     return false
   end
 
-  if opts.full then
+  if opts.full and needs_layout then
+    Util.debug("full layout")
     M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
       sidebar:layout()
     end)

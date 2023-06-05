@@ -117,10 +117,15 @@ function M:on_hide(win)
 end
 
 ---@param wins table<string, number[]>
+---@return boolean updated if the sidebar was updated
 function M:update(wins)
   self.visible = 0
+  local updated = false
   for _, view in ipairs(self.views) do
-    self.visible = self.visible + view:update(wins[view.ft] or {})
+    if view:update(wins[view.ft] or {}) then
+      updated = true
+    end
+    self.visible = self.visible + #view.wins
     wins[view.ft] = vim.tbl_filter(function(w)
       for _, win in ipairs(view.wins) do
         if win.win == w then
@@ -131,6 +136,7 @@ function M:update(wins)
     end, wins[view.ft] or {})
   end
   self:_update({ check = true })
+  return updated
 end
 
 ---@param opts? {check: boolean}

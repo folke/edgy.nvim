@@ -136,6 +136,7 @@ function M.schedule()
         M.schedule()
       else
         M.restore_views(nil, true)
+        Util.debug("animation complete")
         Config.animate.on_end()
       end
     end, 1000 / Config.animate.fps)

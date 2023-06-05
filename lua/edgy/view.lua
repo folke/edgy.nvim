@@ -33,12 +33,14 @@ function M.new(opts, sidebar)
 end
 
 ---@param wins window[]
+---@return boolean updated Whether the view was updated
 function M:update(wins)
   ---@type table<window, Edgy.Window>
   local index = {}
   for _, w in ipairs(self.wins) do
     index[w.win] = w
   end
+  local old = self.wins
   self.wins = {}
   for _, win in ipairs(wins) do
     local buf = vim.api.nvim_win_get_buf(win)
@@ -46,7 +48,7 @@ function M:update(wins)
       self.wins[#self.wins + 1] = index[win] or Window.new(win, self)
     end
   end
-  return #self.wins
+  return not vim.deep_equal(old, self.wins)
 end
 
 ---@param opts? {check: boolean}

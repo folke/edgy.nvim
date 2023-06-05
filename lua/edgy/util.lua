@@ -26,6 +26,16 @@ function M.warn(msg)
   M.notify(msg, vim.log.levels.WARN)
 end
 
+function M.info(msg)
+  M.notify(msg, vim.log.levels.INFO)
+end
+
+function M.debug(msg)
+  if require("edgy.config").debug then
+    M.info(msg)
+  end
+end
+
 ---@generic F: fun()
 ---@param fn F
 ---@param max_retries? number
