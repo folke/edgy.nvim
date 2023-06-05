@@ -121,8 +121,9 @@ local function update()
   ---@type table<string, number[]>
   local wins = {}
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    local ft = vim.bo[vim.api.nvim_win_get_buf(win)].filetype
-    if ft then
+    local buf = vim.api.nvim_win_get_buf(win)
+    local ft = vim.bo[buf].filetype
+    if ft and not vim.b[buf].edgy_disable and not vim.w[win].edgy_disable then
       wins[ft] = wins[ft] or {}
       table.insert(wins[ft], win)
     end
