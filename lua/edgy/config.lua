@@ -1,17 +1,23 @@
----@class EdgyConfig: Edgy.Config
----@field layout table<Edgy.Pos, Edgy.Sidebar>
+---@type Edgy.Config
 local M = {}
 
 ---@alias Edgy.Pos "bottom"|"top"|"left"|"right"
 
 ---@class Edgy.Config
 local defaults = {
-  ---@type table<Edgy.Pos, Edgy.Sidebar.Opts>
-  layout = {},
-  icons = {
-    closed = " ",
-    open = " ",
+  left = {}, ---@type (Edgy.View.Opts|string)[]
+  bottom = {}, ---@type (Edgy.View.Opts|string)[]
+  right = {}, ---@type (Edgy.View.Opts|string)[]
+  top = {}, ---@type (Edgy.View.Opts|string)[]
+
+  ---@type table<Edgy.Pos, {size:integer, wo?:vim.wo}>
+  options = {
+    left = { size = 30 },
+    bottom = { size = 10 },
+    right = { size = 30 },
+    top = { size = 10 },
   },
+  -- edgebar animations
   animate = {
     enabled = true,
     fps = 100, -- frames per second
@@ -33,18 +39,27 @@ local defaults = {
     spell = false,
     signcolumn = "no",
   },
-  -- buffer-local keymaps to be added to sidebar buffers
-  -- values can be an action (see edgy.actions)
-  -- or a function that takes a window.
+  -- buffer-local keymaps to be added to sidebar buffers.
   -- Existing buffer-local keymaps will never be overridden.
-  ---@type table<string, string|fun(win:Edgy.Window)>
+  -- Set to false to disable a builtin.
+  ---@type table<string, fun(win:Edgy.Window)|false>
   keys = {
-    q = "close",
-    Q = "close_sidebar",
-    ["<c-q>"] = "hide",
+    ["q"] = function(win)
+      win:close()
+    end,
+    ["<c-q>"] = function(win)
+      win:hide()
+    end,
+    ["Q"] = function(win)
+      win.view.sidebar:close()
+    end,
   },
-  -- enable this on Neovim <= 0.10.0 to
-  -- properly fold sidebar windows.
+  icons = {
+    closed = " ",
+    open = " ",
+  },
+  -- enable this on Neovim <= 0.10.0 to properly fold sidebar windows.
+  -- Not needed on a nightly build >= June 5, 2023.
   hacks = false,
   debug = false,
 }
@@ -63,8 +78,12 @@ function M.setup(opts)
   opts = vim.tbl_deep_extend("force", defaults, opts or {})
   options = opts
 
-  for pos, s in pairs(opts.layout) do
-    M.layout[pos] = Sidebar.new(pos, s)
+  for _, pos in ipairs({ "bottom", "top", "right", "left" }) do
+    local views = options[pos] or {}
+    if #views > 0 then
+      M.layout[pos] =
+        Sidebar.new(pos, vim.tbl_deep_extend("force", options.options[pos], { views = views }))
+    end
   end
 
   if options.hacks then
@@ -72,6 +91,7 @@ function M.setup(opts)
   end
 
   vim.api.nvim_set_hl(0, "EdgyIcon", { default = true, link = "SignColumn" })
+  vim.api.nvim_set_hl(0, "EdgyIconActive", { default = true, link = "Constant" })
   vim.api.nvim_set_hl(0, "EdgyTitle", { default = true, link = "Title" })
   vim.api.nvim_set_hl(0, "EdgyWinBar", { default = true, link = "Winbar" })
   vim.api.nvim_set_hl(0, "EdgyNormal", { default = true, link = "NormalFloat" })
@@ -79,7 +99,7 @@ function M.setup(opts)
   require("edgy.editor").setup()
 
   local group = vim.api.nvim_create_augroup("layout", { clear = true })
-  vim.api.nvim_create_autocmd({ "BufWinEnter", "WinClosed", "WinNew", "WinResized" }, {
+  vim.api.nvim_create_autocmd({ "BufWinEnter", "WinResized" }, {
     group = group,
     callback = Layout.update,
   })

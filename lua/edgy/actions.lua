@@ -14,30 +14,12 @@ function M.setup(win)
       local ret = vim.fn.maparg(key, "n", false, true)
       -- dont override existing mappings
       if ret.buffer ~= 1 then
-        local rhs = type(action) == "function" and action
-          or function()
-            local w = require("edgy.editor").get_win()
-            M[action](w)
-          end
-        vim.keymap.set("n", key, rhs, { buffer = buf, silent = true })
+        vim.keymap.set("n", key, function()
+          action(require("edgy.editor").get_win())
+        end, { buffer = buf, silent = true })
       end
     end
   end
-end
-
----@param win Edgy.Window
-function M.close(win)
-  vim.api.nvim_win_close(win.win, false)
-end
-
----@param win Edgy.Window
-function M.hide(win)
-  win:show(false)
-end
-
----@param win Edgy.Window
-function M.close_sidebar(win)
-  require("edgy").close(win.view.sidebar.pos)
 end
 
 return M

@@ -73,6 +73,14 @@ function M:show(visibility)
   self.view.sidebar:resize()
 end
 
+function M:hide()
+  self:show(false)
+end
+
+function M:close()
+  vim.api.nvim_win_close(self.win, false)
+end
+
 function M:open()
   if self.opening then
     return
@@ -105,7 +113,10 @@ function M:winbar()
   local parts = {}
 
   parts[#parts + 1] = "%" .. self.win .. "@v:lua.edgy_click@"
-  parts[#parts + 1] = "%#EdgyIcon#"
+  local icon_hl = self:is_pinned() and "EdgyIcon" or "EdgyIconActive"
+  parts[#parts + 1] = "%#"
+    .. icon_hl
+    .. "#"
     .. (self.visible and Config.icons.open or Config.icons.closed)
     .. "%*%<"
   parts[#parts + 1] = "%#EdgyTitle# " .. self.view.title .. "%*"

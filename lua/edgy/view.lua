@@ -3,20 +3,22 @@ local Editor = require("edgy.editor")
 
 ---@class Edgy.View.Opts
 ---@field ft string
----@field filter? fun(win:window):boolean?
+---@field filter? fun(buf:buffer, win:window):boolean?
 ---@field title? string
 ---@field size? Edgy.Size
+-- When a view is pinned, it will always be shown
+-- in the sidebar, even if it has no windows.
 ---@field pinned? boolean
----@field sidebar Edgy.Sidebar
+-- Open function or command to open a pinned view
 ---@field open? fun()|string
----@field close? fun()
----@field wo? vim.wo
+---@field wo? vim.wo View specific window options
 
 ---@class Edgy.View: Edgy.View.Opts
 ---@field title string
 ---@field wins Edgy.Window[]
 ---@field size Edgy.Size
 ---@field pinned_win? Edgy.Window
+---@field sidebar Edgy.Sidebar
 local M = {}
 M.__index = M
 
@@ -39,7 +41,8 @@ function M:update(wins)
   end
   self.wins = {}
   for _, win in ipairs(wins) do
-    if not self.filter or self.filter(win) then
+    local buf = vim.api.nvim_win_get_buf(win)
+    if not self.filter or self.filter(buf, win) then
       self.wins[#self.wins + 1] = index[win] or Window.new(win, self)
     end
   end

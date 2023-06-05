@@ -26,6 +26,7 @@ local wincmds = {
 ---@field dirty boolean
 ---@field visible number
 ---@field stop boolean
+---@field bounds {width:number, height:number}
 local M = {}
 M.__index = M
 
@@ -54,6 +55,7 @@ function M.new(pos, opts)
   self.state = {}
   self.wo = opts.wo
   self.dirty = true
+  self.bounds = { width = 0, height = 0 }
   for _, v in ipairs(opts.views) do
     v = type(v) == "string" and { ft = v } or v
     ---@cast v Edgy.View.Opts
@@ -195,7 +197,7 @@ function M:resize()
   local long = self.vertical and "height" or "width"
   local short = self.vertical and "width" or "height"
 
-  local bounds = {
+  self.bounds = {
     width = self.vertical and M.size(self.size, vim.o.columns) or 0,
     height = self.vertical and 0 or M.size(self.size, vim.o.lines),
   }
@@ -204,11 +206,11 @@ function M:resize()
   for _, win in ipairs(self.wins) do
     if win.visible then
       local size = M.size(win.view.size[short] or 0, self.vertical and vim.o.columns or vim.o.lines)
-      bounds[short] = math.max(bounds[short], size)
+      self.bounds[short] = math.max(self.bounds[short], size)
     end
     local size = self.vertical and vim.api.nvim_win_get_height(win.win)
       or vim.api.nvim_win_get_width(win.win)
-    bounds[long] = bounds[long] + size
+    self.bounds[long] = self.bounds[long] + size
   end
 
   -- views with auto-sized windows
@@ -218,13 +220,13 @@ function M:resize()
   local fixed = {} ---@type Edgy.Window[]
 
   -- calculate window sizes
-  local free = bounds[long]
+  local free = self.bounds[long]
   for _, win in ipairs(self.wins) do
-    win[short] = bounds[short]
+    win[short] = self.bounds[short]
     win[long] = 1
     -- fixed-sized windows
     if win.visible and win.view.size[long] then
-      win[long] = M.size(win.view.size[long], bounds[long])
+      win[long] = M.size(win.view.size[long], self.bounds[long])
       fixed[#fixed + 1] = win
     -- auto-sized windows
     elseif win.visible then
