@@ -9,6 +9,7 @@ bringing a new edge to your workflow.
 
 - Automatically move windows (including floating windows) in a pre-defined layout
 - Custom window options for **edgebar** windows
+- Pinned views that will always be shown (collapsed) even when they don't have a window
 - Custom buffer-local keymaps for **edgebar** windows
 - Pretty animations
 
