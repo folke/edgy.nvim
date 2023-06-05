@@ -92,7 +92,7 @@ function M.restore_views(wins, full)
         if full then
           vim.fn.winrestview(state.view)
         else
-          vim.fn.winrestview({ topline = state.view.topline })
+          vim.fn.winrestview({ topline = state.view.topline, leftcol = state.view.leftcol })
         end
       end)
     end
