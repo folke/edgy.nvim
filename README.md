@@ -3,6 +3,8 @@
 A Neovim plugin to easily create and manage predefined window layouts,
 bringing a new edge to your workflow.
 
+![image](https://github.com/folke/edgy.nvim/assets/292349/0e4d7e7f-4fc5-497a-90e2-c1e2f349af5b)
+
 ## ✨ Features
 
 - Automatically move windows (including floating windows) in a pre-defined layout
