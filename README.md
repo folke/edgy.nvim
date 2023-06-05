@@ -7,11 +7,12 @@ bringing a new edge to your workflow.
 
 ## ✨ Features
 
-- Automatically move windows (including floating windows) in a pre-defined layout
-- Custom window options for **edgebar** windows
-- Pinned views that will always be shown (collapsed) even when they don't have a window
-- Custom buffer-local keymaps for **edgebar** windows
-- Pretty animations
+- 🔄 Automatically move windows (including floating windows) in a pre-defined layout
+- 📐 Manage layouts while keeping your main editor splits untouched.
+- 🔧 Personalize **edgebar** window options to fit your style.
+- 📌 Pinned views for easy access, even when they're collapsed or lack a window.
+- ⌨️ Make navigation easier with personalized buffer-local _keymaps_ for **edgebar** windows.
+- 🎆 Pretty animations (works well with [mini.animate](https://github.com/echasnovski/mini.animate))
 
 ## 📦 Installation
 
@@ -90,21 +91,17 @@ Install the plugin with your preferred package manager:
 }
 ```
 
-**_Edgy.View.Opts_**
+### 👁️ `Edgy.View.Opts`
 
-```lua
----@class Edgy.View.Opts
----@field ft string
----@field filter? fun(buf:buffer, win:window):boolean?
----@field title? string
----@field size? Edgy.Size
--- When a view is pinned, it will always be shown
--- in the sidebar, even if it has no windows.
----@field pinned? boolean
--- Open function or command to open a pinned view
----@field open? fun()|string
----@field wo? vim.wo View specific window options
-```
+| **Property** | **Type**                       | **Description**                                                                                             |
+| ------------ | ------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| **ft**       | `string`                       | File type of the view                                                                                       |
+| **filter**   | `fun(buf:buffer, win:window)?` | Optional function to filter buffers and windows                                                             |
+| **title**    | `string?`                      | Optional title of the view. Defaults to the capitalized filetype                                            |
+| **size**     | `number`                       | Size of the short edge of the edgebar. For sidebars, this is the minimum width. For panels, minimum height. |
+| **pinned**   | `boolean?`                     | If true, the view will always be shown in the sidebar even when it has no windows                           |
+| **open**     | `fun()` or `string`            | Function or command to open a pinned view                                                                   |
+| **wo**       | `vim.wo?`                      | View-specific window options                                                                                |
 
 ## 🪟 Example Setup
 
@@ -185,5 +182,6 @@ in your layout.
   Edgy will then expunge the window from the layout.
 
 - check the [Show and Tell](https://github.com/folke/edgy.nvim/discussions/categories/show-and-tell)
-  section of the github discussions for more tips like integrations
-  with other plugins.
+  section of the github discussions for snippets for better integration
+  with plugins like [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim),
+  [bufferline.nvim](https://github.com/akinsho/bufferline.nvim), ...
