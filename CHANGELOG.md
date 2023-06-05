@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.0](https://github.com/folke/edgy.nvim/compare/v1.0.0...v1.1.0) (2023-06-05)
+
+
+### Features
+
+* allow disabling edgy for a buf/win with var edgy_disable ([b1e87ab](https://github.com/folke/edgy.nvim/commit/b1e87abecb69eb6fd96b6f55a4905b8928104c09))
+* **animate:** show a spinner when loading a pinned view ([8dc7aee](https://github.com/folke/edgy.nvim/commit/8dc7aeeca847b03949f19454df926e1c4613e911))
+* set edgy filetype ([e345756](https://github.com/folke/edgy.nvim/commit/e3457565fc7a4cd4ab75b74ee2da1ed8a35202aa))
+
+
+### Bug Fixes
+
+* **animate:** better save/restore of window views ([9acf7cc](https://github.com/folke/edgy.nvim/commit/9acf7cc9c63c499bcd115daf70b61af0a17171bc))
+* **animate:** restore leftcol during animate ([9eededc](https://github.com/folke/edgy.nvim/commit/9eededc45cdbff2b1a5f709b26832eca80b4a5c1))
+* don't set winbar when false ([89d0e9c](https://github.com/folke/edgy.nvim/commit/89d0e9c05fd439b39f378c7f03f748fe6c36ab5a))
+* **layout:** always do instant resize when views were added or deleted ([483861d](https://github.com/folke/edgy.nvim/commit/483861d0a3cfbedcddec0ff0a8fb83f62be716a5))
+
 ## 1.0.0 (2023-06-05)
 
 
