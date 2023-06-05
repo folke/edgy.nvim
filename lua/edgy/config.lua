@@ -32,6 +32,9 @@ local defaults = {
   -- global window options for sidebar windows
   ---@type vim.wo
   wo = {
+    -- Setting to `true`, will add an edgy winbar.
+    -- Setting to `false`, won't set any winbar.
+    -- Setting to a string, will set the winbar to that string.
     winbar = true,
     winfixwidth = true,
     winfixheight = false,

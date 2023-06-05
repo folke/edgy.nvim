@@ -36,7 +36,7 @@ function M.new(win, view)
     end
     wo.winbar = "%!v:lua.edgy_winbar(" .. win .. ")"
   elseif wo.winbar == false then
-    wo.winbar = ""
+    wo.winbar = nil
   end
   for k, v in pairs(wo) do
     vim.api.nvim_set_option_value(k, v, { scope = "local", win = win })
