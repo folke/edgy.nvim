@@ -8,6 +8,8 @@ Table of Contents                                *edgy.nvim-table-of-contents*
   - Installation                       |edgy.nvim-🪟-edgy.nvim-installation|
   - Configuration                     |edgy.nvim-🪟-edgy.nvim-configuration|
   - 🪟 Example Setup           |edgy.nvim-🪟-edgy.nvim-🪟-example-setup|
+  - Usage                                     |edgy.nvim-🪟-edgy.nvim-usage|
+  - Tips & tricks                     |edgy.nvim-🪟-edgy.nvim-tips-&-tricks|
 
 ==============================================================================
 1. 🪟 edgy.nvim                                   *edgy.nvim-🪟-edgy.nvim*
@@ -182,6 +184,28 @@ CONFIGURATION                         *edgy.nvim-🪟-edgy.nvim-configuration*
       },
     }
 <
+
+
+USAGE                                         *edgy.nvim-🪟-edgy.nvim-usage*
+
+Just open windows/buffers as you normally do, but now they will be displayed in
+your layout.
+
+
+API ~
+
+- `require("edgy").close(pos?)` close all sidebars or a sidebar in the given position
+
+
+TIPS & TRICKS                         *edgy.nvim-🪟-edgy.nvim-tips-&-tricks*
+
+- disable edgy for a window/buffer by setting `vim.b[buf].edgy_disable` or
+    `vim.w[win].edgy_disable`. You can even set this after the facts. Edgy will
+    then expunge the window from the layout.
+- check the Show and Tell
+    <https://github.com/folke/edgy.nvim/discussions/categories/show-and-tell>
+    section of the github discussions for more tips like integrations with other
+    plugins.
 
 ==============================================================================
 2. Links                                                     *edgy.nvim-links*
