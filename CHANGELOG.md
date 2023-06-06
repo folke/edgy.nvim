@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0](https://github.com/folke/edgy.nvim/compare/v1.1.0...v1.2.0) (2023-06-06)
+
+
+### Features
+
+* added `require("edgy").select()` to jump to a edgy window ([7572ae2](https://github.com/folke/edgy.nvim/commit/7572ae2b680df81646a1c764fb2625f76c817fae))
+* added keymaps to quickly jump between edgebar windows ([e1469b1](https://github.com/folke/edgy.nvim/commit/e1469b179d642840e83c590c3dc52e61342a60eb))
+* expose some commands on the main edgy module ([af8df65](https://github.com/folke/edgy.nvim/commit/af8df6581f4915b4ef62f0436aacdf8ff2cc890a))
+
 ## [1.1.0](https://github.com/folke/edgy.nvim/compare/v1.0.0...v1.1.0) (2023-06-05)
 
 
