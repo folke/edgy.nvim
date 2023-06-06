@@ -85,14 +85,33 @@ Install the plugin with your preferred package manager:
   -- Set to false to disable a builtin.
   ---@type table<string, fun(win:Edgy.Window)|false>
   keys = {
+    -- close window
     ["q"] = function(win)
       win:close()
     end,
+    -- hide window
     ["<c-q>"] = function(win)
       win:hide()
     end,
+    -- close sidebar
     ["Q"] = function(win)
       win.view.edgebar:close()
+    end,
+    -- next open window
+    ["]w"] = function(win)
+      win:next({ visible = true, focus = true })
+    end,
+    -- previous open window
+    ["[w"] = function(win)
+      win:prev({ visible = true, focus = true })
+    end,
+    -- next loaded window
+    ["]W"] = function(win)
+      win:next({ pinned = false, focus = true })
+    end,
+    -- prev loaded window
+    ["[W"] = function(win)
+      win:prev({ pinned = false, focus = true })
     end,
   },
   icons = {
@@ -124,11 +143,13 @@ in your layout.
 
 ### ⌨️ Keymaps for Edgebar Windows
 
-| **Keymap** | **Description**   |
-| ---------- | ----------------- |
-| `q`        | Close the window  |
-| `<c-q>`    | Hide the window   |
-| `Q`        | Close the edgebar |
+| **Keymap** | **Description**         |
+| ---------- | ----------------------- |
+| `q`        | Close the window        |
+| `<c-q>`    | Hide the window         |
+| `Q`        | Close the edgebar       |
+| `]w`, `[w` | Next/Prev open window   |
+| `]W`, `[W` | Next/Prev loaded window |
 
 ### 🔌 API
 

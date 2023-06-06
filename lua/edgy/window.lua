@@ -81,6 +81,41 @@ function M:close()
   vim.api.nvim_win_close(self.win, false)
 end
 
+---@param opts? {pinned?:boolean, visible?:boolean, focus?:boolean}
+function M:next(opts)
+  return self:sibling("next", opts)
+end
+
+---@param opts? {pinned?:boolean, visible?:boolean, focus?:boolean}
+function M:prev(opts)
+  return self:sibling("prev", opts)
+end
+
+---@param dir "next" | "prev"
+---@param opts? {pinned?:boolean, visible?:boolean, focus?:boolean}
+function M:sibling(dir, opts)
+  opts = opts or {}
+  local inc = dir == "next" and 1 or -1
+  local idx = self.idx + inc
+  while self.view.edgebar.wins[idx] do
+    local win = self.view.edgebar.wins[idx]
+    if
+      (opts.pinned == nil or opts.pinned == win:is_pinned())
+      and (opts.visible == nil or opts.visible == win.visible)
+    then
+      if opts.focus then
+        win:focus()
+      end
+      return win
+    end
+    idx = idx + inc
+  end
+end
+
+function M:focus()
+  vim.api.nvim_set_current_win(self.win)
+end
+
 function M:open()
   if self.opening then
     return
