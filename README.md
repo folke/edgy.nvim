@@ -153,6 +153,8 @@ in your layout.
 
 ### 🔌 API
 
+- `require("edgy").select(pos?, filter?)` select a window with `vim.ui.select`
+  in the given position or in all edgebars using an optional filter
 - `require("edgy").close(pos?)` close all edgebars or a edgebar in the given position
 - `require("edgy").goto_main()` move the cursor to the last focused main window
 - `require("edgy").get_win(window?)` get the Edgy.Window object for the given window

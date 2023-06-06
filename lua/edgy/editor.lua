@@ -97,6 +97,43 @@ function M.list_wins()
   return wins
 end
 
+---@param pos? Edgy.Pos
+---@param filter? fun(win:Edgy.Window):boolean
+function M.select(pos, filter)
+  local Config = require("edgy.config")
+  local wins = {}
+  for p, edgebar in pairs(Config.layout) do
+    if p == pos or pos == nil then
+      for _, win in ipairs(edgebar.wins) do
+        if filter == nil or filter(win) then
+          wins[#wins + 1] = win
+        end
+      end
+    end
+  end
+  vim.ui.select(
+    wins,
+    {
+      prompt = "Select window:",
+      ---@param w Edgy.Window
+      format_item = function(w)
+        local title = w.view.title
+        if pos == nil then
+          title = "[" .. w.view.edgebar.pos .. "] " .. title
+        end
+        return title
+      end,
+      kind = "edgy.window",
+    },
+    ---@param win? Edgy.Window
+    function(win)
+      if win then
+        win:focus()
+      end
+    end
+  )
+end
+
 -- Move the cursor to the last entered main window
 function M.goto_main()
   local wins = vim.tbl_values(M.list_wins().main)
