@@ -36,6 +36,8 @@ INSTALLATION                           *edgy.nvim-🪟-edgy.nvim-installation*
 
 Install the plugin with your preferred package manager:
 
+lazy.nvim <https://github.com/folke/lazy.nvim>
+
 >lua
     {
       "folke/edgy.nvim",
@@ -43,6 +45,9 @@ Install the plugin with your preferred package manager:
       opts = {}
     }
 <
+
+Ifyou’re not using **lazy.nvim**, make sure to call
+`require("edgy").setup(opts?)`.
 
 
 CONFIGURATION                         *edgy.nvim-🪟-edgy.nvim-configuration*
