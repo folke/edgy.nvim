@@ -100,14 +100,33 @@ CONFIGURATION                         *edgy.nvim-🪟-edgy.nvim-configuration*
       -- Set to false to disable a builtin.
       ---@type table<string, fun(win:Edgy.Window)|false>
       keys = {
+        -- close window
         ["q"] = function(win)
           win:close()
         end,
+        -- hide window
         ["<c-q>"] = function(win)
           win:hide()
         end,
+        -- close sidebar
         ["Q"] = function(win)
           win.view.edgebar:close()
+        end,
+        -- next open window
+        ["]w"] = function(win)
+          win:next({ visible = true, focus = true })
+        end,
+        -- previous open window
+        ["[w"] = function(win)
+          win:prev({ visible = true, focus = true })
+        end,
+        -- next loaded window
+        ["]W"] = function(win)
+          win:next({ pinned = false, focus = true })
+        end,
+        -- prev loaded window
+        ["[W"] = function(win)
+          win:prev({ pinned = false, focus = true })
         end,
       },
       icons = {
@@ -154,14 +173,21 @@ your layout.
 KEYMAPS FOR EDGEBAR WINDOWS ~
 
   Keymap   Description
-  -------- -------------------
+  -------- -------------------------
   q        Close the window
   <c-q>    Hide the window
   Q        Close the edgebar
+  ]w, [w   Next/Prev open window
+  ]W, [W   Next/Prev loaded window
 
 API ~
 
+- `require("edgy").select(pos?, filter?)` select a window with `vim.ui.select`
+    in the given position or in all edgebars using an optional filter
 - `require("edgy").close(pos?)` close all edgebars or a edgebar in the given position
+- `require("edgy").goto_main()` move the cursor to the last focused main window
+- `require("edgy").get_win(window?)` get the Edgy.Window object for the given window
+    or the current window
 
 
 🪟 EXAMPLE SETUP               *edgy.nvim-🪟-edgy.nvim-🪟-example-setup*
