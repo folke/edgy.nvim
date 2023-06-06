@@ -114,7 +114,7 @@ function M.select(pos, filter)
   vim.ui.select(
     wins,
     {
-      prompt = "Select window:",
+      prompt = "Select Edgy Window:",
       ---@param w Edgy.Window
       format_item = function(w)
         local title = w.view.title
