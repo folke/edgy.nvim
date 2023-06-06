@@ -3,7 +3,7 @@ local Util = require("edgy.util")
 local Editor = require("edgy.editor")
 local Config = require("edgy.config")
 
----@class Edgy.Sidebar.Opts
+---@class Edgy.Edgebar.Opts
 ---@field views (Edgy.View.Opts|string)[]
 ---@field size? number
 ---@field wo? vim.wo
@@ -15,7 +15,7 @@ local wincmds = {
   left = "H",
 }
 
----@class Edgy.Sidebar
+---@class Edgy.Edgebar
 ---@field pos Edgy.Pos
 ---@field views Edgy.View[]
 ---@field wins Edgy.Window[]
@@ -41,8 +41,8 @@ function M.size(size, max)
 end
 
 ---@param pos Edgy.Pos
----@param opts Edgy.Sidebar.Opts
----@return Edgy.Sidebar
+---@param opts Edgy.Edgebar.Opts
+---@return Edgy.Edgebar
 function M.new(pos, opts)
   local vertical = pos == "left" or pos == "right"
   local self = setmetatable({}, M)
@@ -117,7 +117,7 @@ function M:on_hide(win)
 end
 
 ---@param wins table<string, number[]>
----@return boolean updated if the sidebar was updated
+---@return boolean updated if the edgebar was updated
 function M:update(wins)
   self.visible = 0
   local updated = false
@@ -169,14 +169,14 @@ function M:layout()
   ---@type number?
   local last
   for _, w in ipairs(self.wins) do
-    -- move first window to the sidebar position
+    -- move first window to the edgebar position
     -- and make floating windows normal windows
     if not last or vim.api.nvim_win_get_config(w.win).relative ~= "" then
       vim.api.nvim_win_call(w.win, function()
         vim.cmd("wincmd " .. wincmds[self.pos])
       end)
     end
-    -- move other windows to the end of the sidebar
+    -- move other windows to the end of the edgebar
     if last then
       local ok, err = pcall(vim.fn.win_splitmove, w.win, last, { vertical = not self.vertical })
       if not ok then
@@ -208,7 +208,7 @@ function M:resize()
     height = self.vertical and 0 or M.size(self.size, vim.o.lines),
   }
 
-  -- calculate the sidebar bounds
+  -- calculate the edgebar bounds
   for _, win in ipairs(self.wins) do
     if win.visible then
       local size = M.size(win.view.size[short] or 0, self.vertical and vim.o.columns or vim.o.lines)

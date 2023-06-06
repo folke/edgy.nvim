@@ -15,19 +15,19 @@ M.state = setmetatable({}, { __mode = "k" })
 ---@param win Edgy.Window
 function M.get_state(win)
   if not M.state[win] then
-    local sidebar = win.view.sidebar
-    local long = sidebar.vertical and "height" or "width"
-    local short = sidebar.vertical and "width" or "height"
+    local edgebar = win.view.edgebar
+    local long = edgebar.vertical and "height" or "width"
+    local short = edgebar.vertical and "width" or "height"
     local bounds = {
       width = vim.api.nvim_win_get_width(win.win),
       height = vim.api.nvim_win_get_height(win.win),
     }
     M.state[win] = {
-      [long] = #sidebar.wins == 1 and bounds[long] or 1,
-      [short] = #sidebar.wins == 1 and 1 or sidebar.size,
+      [long] = #edgebar.wins == 1 and bounds[long] or 1,
+      [short] = #edgebar.wins == 1 and 1 or edgebar.size,
       view = vim.api.nvim_win_call(win.win, vim.fn.winsaveview),
     }
-    for _, w in ipairs(sidebar.wins) do
+    for _, w in ipairs(edgebar.wins) do
       M.state[win][short] = math.max(M.state[win][short], M.state[w] and M.state[w][short] or 0)
     end
   end
@@ -73,8 +73,8 @@ end
 
 function M.wins()
   local wins = {} ---@type Edgy.Window[]
-  Layout.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
-    for _, win in ipairs(sidebar.wins) do
+  Layout.foreach({ "bottom", "top", "left", "right" }, function(edgebar)
+    for _, win in ipairs(edgebar.wins) do
       if win:is_valid() then
         wins[#wins + 1] = win
       end

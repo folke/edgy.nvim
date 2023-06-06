@@ -28,7 +28,7 @@ function M.setup()
 end
 
 -- Ensures that there is always a main window
--- when a sidebar is visible
+-- when a edgebar is visible
 function M.check_main()
   local wins = M.list_wins()
   if vim.tbl_isempty(wins.main) and not vim.tbl_isempty(wins.edgy) then
@@ -87,8 +87,8 @@ function M.list_wins()
     end
   end
 
-  for _, sidebar in pairs(Config.layout) do
-    for _, win in ipairs(sidebar.wins) do
+  for _, edgebar in pairs(Config.layout) do
+    for _, win in ipairs(edgebar.wins) do
       wins.edgy[win.win] = win.win
       wins.main[win.win] = nil
     end
@@ -119,8 +119,8 @@ end
 function M.get_win(win)
   local Config = require("edgy.config")
   win = win or vim.api.nvim_get_current_win()
-  for _, sidebar in pairs(Config.layout) do
-    for _, w in ipairs(sidebar.wins) do
+  for _, edgebar in pairs(Config.layout) do
+    for _, w in ipairs(edgebar.wins) do
       if w.win == win then
         return w
       end

@@ -59,14 +59,14 @@ end
 function M.needs_layout()
   local done = {}
   for _, pos in ipairs({ "left", "right", "bottom", "top" }) do
-    local sidebar = Config.layout[pos]
-    if sidebar and sidebar.dirty then
+    local edgebar = Config.layout[pos]
+    if edgebar and edgebar.dirty then
       return true
     end
-    if sidebar and #sidebar.wins > 0 then
+    if edgebar and #edgebar.wins > 0 then
       local needed = vim.tbl_map(function(w)
         return w.win
-      end, sidebar.wins)
+      end, edgebar.wins)
 
       local found = vim.tbl_filter(function(w)
         return not vim.tbl_contains(done, w)
@@ -95,7 +95,7 @@ function M.debug(wins)
 end
 
 ---@param pos Edgy.Pos[]
----@param fn fun(sidebar: Edgy.Sidebar, pos: Edgy.Pos)
+---@param fn fun(edgebar: Edgy.Edgebar, pos: Edgy.Pos)
 function M.foreach(pos, fn)
   for _, p in ipairs(pos) do
     if Config.layout[p] then
@@ -105,15 +105,15 @@ function M.foreach(pos, fn)
 end
 
 local function save_state()
-  M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
-    sidebar:save_state()
+  M.foreach({ "bottom", "top", "left", "right" }, function(edgebar)
+    edgebar:save_state()
   end)
 end
 
 local function restore_state()
   -- restore window state (topline)
-  for _, sidebar in pairs(Config.layout) do
-    sidebar:restore_state()
+  for _, edgebar in pairs(Config.layout) do
+    edgebar:restore_state()
   end
 end
 
@@ -131,9 +131,9 @@ local function update()
   end
 
   local changed = false
-  -- Update the windows in each sidebar
-  M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
-    if sidebar:update(wins) then
+  -- Update the windows in each edgebar
+  M.foreach({ "bottom", "top", "left", "right" }, function(edgebar)
+    if edgebar:update(wins) then
       changed = true
     end
   end)
@@ -153,16 +153,16 @@ function M.layout(opts)
 
   if opts.full and needs_layout then
     Util.debug("full layout")
-    M.foreach({ "bottom", "top", "left", "right" }, function(sidebar)
-      sidebar:layout()
+    M.foreach({ "bottom", "top", "left", "right" }, function(edgebar)
+      edgebar:layout()
     end)
   else
     -- only save state if the layout is intact
     save_state()
   end
 
-  M.foreach({ "left", "right", "bottom", "top" }, function(sidebar)
-    sidebar:resize()
+  M.foreach({ "left", "right", "bottom", "top" }, function(edgebar)
+    edgebar:resize()
   end)
 
   restore_state()

@@ -7,7 +7,7 @@ local Editor = require("edgy.editor")
 ---@field title? string
 ---@field size? Edgy.Size
 -- When a view is pinned, it will always be shown
--- in the sidebar, even if it has no windows.
+-- in the edgebar, even if it has no windows.
 ---@field pinned? boolean
 -- Open function or command to open a pinned view
 ---@field open? fun()|string
@@ -18,14 +18,14 @@ local Editor = require("edgy.editor")
 ---@field wins Edgy.Window[]
 ---@field size Edgy.Size
 ---@field pinned_win? Edgy.Window
----@field sidebar Edgy.Sidebar
+---@field edgebar Edgy.Edgebar
 local M = {}
 M.__index = M
 
 ---@param opts Edgy.View.Opts
-function M.new(opts, sidebar)
+function M.new(opts, edgebar)
   local self = setmetatable(opts, M)
-  self.sidebar = sidebar
+  self.edgebar = edgebar
   self.wins = {}
   self.title = self.title or self.ft:sub(1, 1):upper() .. self.ft:sub(2)
   self.size = self.size or {}
@@ -56,7 +56,7 @@ function M:layout(opts)
   if #self.wins == 1 and self.wins[1] == self.pinned_win then
     self.wins = {}
   end
-  if self.sidebar.visible > 0 and self.pinned and #self.wins == 0 then
+  if self.edgebar.visible > 0 and self.pinned and #self.wins == 0 then
     self:show_pinned(opts)
   else
     self:hide_pinned(opts)
@@ -67,7 +67,7 @@ end
 function M:show_pinned(opts)
   if not (self.pinned_win and vim.api.nvim_win_is_valid(self.pinned_win.win)) then
     if opts and opts.check then
-      self.sidebar.dirty = true
+      self.edgebar.dirty = true
       return
     end
     local buf = vim.api.nvim_create_buf(false, true)
@@ -100,7 +100,7 @@ end
 function M:hide_pinned(opts)
   if self.pinned_win and vim.api.nvim_win_is_valid(self.pinned_win.win) then
     if opts and opts.check then
-      self.sidebar.dirty = true
+      self.edgebar.dirty = true
       return
     end
     if self.pinned_win.win == vim.api.nvim_get_current_win() then

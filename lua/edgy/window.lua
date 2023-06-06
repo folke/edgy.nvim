@@ -28,7 +28,7 @@ function M.new(win, view)
   self.opening = false
 
   ---@type vim.wo
-  local wo = vim.tbl_deep_extend("force", {}, Config.wo, view.sidebar.wo or {}, view.wo or {})
+  local wo = vim.tbl_deep_extend("force", {}, Config.wo, view.edgebar.wo or {}, view.wo or {})
 
   if wo.winbar == true then
     if vim.api.nvim_win_get_height(win) == 1 then
@@ -44,7 +44,7 @@ function M.new(win, view)
   vim.api.nvim_create_autocmd("WinClosed", {
     callback = function(event)
       if tonumber(event.match) == self.win then
-        self.view.sidebar:on_hide(self)
+        self.view.edgebar:on_hide(self)
         return true
       end
     end,
@@ -66,11 +66,11 @@ function M:show(visibility)
   end
 
   if not self.visible then
-    self.view.sidebar:on_hide(self)
+    self.view.edgebar:on_hide(self)
   end
 
   vim.cmd([[redrawstatus!]])
-  self.view.sidebar:resize()
+  self.view.edgebar:resize()
 end
 
 function M:hide()

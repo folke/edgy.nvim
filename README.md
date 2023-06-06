@@ -10,7 +10,7 @@ bringing a new edge to your workflow.
 - 🔄 Automatically move windows (including floating windows) in a pre-defined layout
 - 📐 Manage layouts while keeping your main editor splits untouched.
 - 🔧 Personalize **edgebar** window options to fit your style.
-- 📌 Pinned views are always shown in the sidebar even when they have no windows.
+- 📌 Pinned views are always shown in the edgebar even when they have no windows.
 - ⌨️ Make navigation easier with personalized buffer-local _keymaps_ for **edgebar** windows.
 - 🎆 Pretty animations (works well with [mini.animate](https://github.com/echasnovski/mini.animate))
 - 🧩 Works with any plugin. Check [Show and Tell](https://github.com/folke/edgy.nvim/discussions/categories/show-and-tell)
@@ -67,7 +67,7 @@ Install the plugin with your preferred package manager:
       interval = 80,
     },
   },
-  -- global window options for sidebar windows
+  -- global window options for edgebar windows
   ---@type vim.wo
   wo = {
     -- Setting to `true`, will add an edgy winbar.
@@ -80,7 +80,7 @@ Install the plugin with your preferred package manager:
     spell = false,
     signcolumn = "no",
   },
-  -- buffer-local keymaps to be added to sidebar buffers.
+  -- buffer-local keymaps to be added to edgebar buffers.
   -- Existing buffer-local keymaps will never be overridden.
   -- Set to false to disable a builtin.
   ---@type table<string, fun(win:Edgy.Window)|false>
@@ -92,14 +92,14 @@ Install the plugin with your preferred package manager:
       win:hide()
     end,
     ["Q"] = function(win)
-      win.view.sidebar:close()
+      win.view.edgebar:close()
     end,
   },
   icons = {
     closed = " ",
     open = " ",
   },
-  -- enable this on Neovim <= 0.10.0 to properly fold sidebar windows.
+  -- enable this on Neovim <= 0.10.0 to properly fold edgebar windows.
   -- Not needed on a nightly build >= June 5, 2023.
   fix_win_height = vim.fn.has("nvim-0.10.0") == 0,
 }
@@ -112,8 +112,8 @@ Install the plugin with your preferred package manager:
 | **ft**       | `string`                       | File type of the view                                                                                       |
 | **filter**   | `fun(buf:buffer, win:window)?` | Optional function to filter buffers and windows                                                             |
 | **title**    | `string?`                      | Optional title of the view. Defaults to the capitalized filetype                                            |
-| **size**     | `number`                       | Size of the short edge of the edgebar. For sidebars, this is the minimum width. For panels, minimum height. |
-| **pinned**   | `boolean?`                     | If true, the view will always be shown in the sidebar even when it has no windows                           |
+| **size**     | `number`                       | Size of the short edge of the edgebar. For edgebars, this is the minimum width. For panels, minimum height. |
+| **pinned**   | `boolean?`                     | If true, the view will always be shown in the edgebar even when it has no windows                           |
 | **open**     | `fun()` or `string`            | Function or command to open a pinned view                                                                   |
 | **wo**       | `vim.wo?`                      | View-specific window options                                                                                |
 
@@ -128,11 +128,11 @@ in your layout.
 | ---------- | ----------------- |
 | `q`        | Close the window  |
 | `<c-q>`    | Hide the window   |
-| `Q`        | Close the sidebar |
+| `Q`        | Close the edgebar |
 
 ### 🔌 API
 
-- `require("edgy").close(pos?)` close all sidebars or a sidebar in the given position
+- `require("edgy").close(pos?)` close all edgebars or a edgebar in the given position
 
 ## 🪟 Example Setup
 

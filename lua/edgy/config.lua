@@ -36,7 +36,7 @@ local defaults = {
       interval = 80,
     },
   },
-  -- global window options for sidebar windows
+  -- global window options for edgebar windows
   ---@type vim.wo
   wo = {
     -- Setting to `true`, will add an edgy winbar.
@@ -49,7 +49,7 @@ local defaults = {
     spell = false,
     signcolumn = "no",
   },
-  -- buffer-local keymaps to be added to sidebar buffers.
+  -- buffer-local keymaps to be added to edgebar buffers.
   -- Existing buffer-local keymaps will never be overridden.
   -- Set to false to disable a builtin.
   ---@type table<string, fun(win:Edgy.Window)|false>
@@ -61,14 +61,14 @@ local defaults = {
       win:hide()
     end,
     ["Q"] = function(win)
-      win.view.sidebar:close()
+      win.view.edgebar:close()
     end,
   },
   icons = {
     closed = " ",
     open = " ",
   },
-  -- enable this on Neovim <= 0.10.0 to properly fold sidebar windows.
+  -- enable this on Neovim <= 0.10.0 to properly fold edgebar windows.
   -- Not needed on a nightly build >= June 5, 2023.
   fix_win_height = vim.fn.has("nvim-0.10.0") == 0,
   debug = false,
@@ -77,12 +77,12 @@ local defaults = {
 ---@type Edgy.Config
 local options
 
----@type table<Edgy.Pos, Edgy.Sidebar>
+---@type table<Edgy.Pos, Edgy.Edgebar>
 M.layout = {}
 
 ---@param opts? Edgy.Config
 function M.setup(opts)
-  local Sidebar = require("edgy.sidebar")
+  local Edgebar = require("edgy.edgebar")
   local Layout = require("edgy.layout")
 
   opts = vim.tbl_deep_extend("force", defaults, opts or {})
@@ -92,7 +92,7 @@ function M.setup(opts)
     local views = options[pos] or {}
     if #views > 0 then
       M.layout[pos] =
-        Sidebar.new(pos, vim.tbl_deep_extend("force", options.options[pos], { views = views }))
+        Edgebar.new(pos, vim.tbl_deep_extend("force", options.options[pos], { views = views }))
     end
   end
 
