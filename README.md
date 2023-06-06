@@ -22,6 +22,8 @@ bringing a new edge to your workflow.
 
 Install the plugin with your preferred package manager:
 
+[lazy.nvim](https://github.com/folke/lazy.nvim):
+
 ```lua
 {
   "folke/edgy.nvim",
@@ -29,6 +31,8 @@ Install the plugin with your preferred package manager:
   opts = {}
 }
 ```
+
+If you're not using **lazy.nvim**, make sure to call `require("edgy").setup(opts?)`.
 
 ## ⚙️ Configuration
 
