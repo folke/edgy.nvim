@@ -1,3 +1,5 @@
+local Config = require("edgy.config")
+
 local M = {}
 
 function M.setup()
@@ -31,37 +33,44 @@ end
 -- when a edgebar is visible
 function M.check_main()
   local wins = M.list_wins()
-  if vim.tbl_isempty(wins.main) and not vim.tbl_isempty(wins.edgy) then
-    -- skip buffers shown in floating windows and edgy windows
-    local skip = {}
-    for _, win in pairs(wins.floating) do
-      local buf = vim.api.nvim_win_get_buf(win)
-      skip[buf] = buf
-    end
-    for _, win in pairs(wins.edgy) do
-      local buf = vim.api.nvim_win_get_buf(win)
-      skip[buf] = buf
-    end
 
-    -- get all other buffers
-    ---@type buffer[]
-    local bufs = {}
-    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-      if not skip[buf] then
-        table.insert(bufs, buf)
-      end
-    end
+  if vim.tbl_isempty(wins.edgy) or not vim.tbl_isempty(wins.main) then
+    return
+  end
 
-    -- sort by last enter time
-    table.sort(bufs, function(a, b)
-      return (vim.b[a].edgy_enter or 0) > (vim.b[b].edgy_enter or 0)
-    end)
+  if Config.exit_when_last then
+    vim.cmd([[qa]])
+  end
 
-    if #bufs > 0 then
-      vim.cmd("botright sb " .. vim.api.nvim_buf_get_name(bufs[1]))
-    else
-      vim.cmd([[botright new]])
+  -- skip buffers shown in floating windows and edgy windows
+  local skip = {}
+  for _, win in pairs(wins.floating) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    skip[buf] = buf
+  end
+  for _, win in pairs(wins.edgy) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    skip[buf] = buf
+  end
+
+  -- get all other buffers
+  ---@type buffer[]
+  local bufs = {}
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if not skip[buf] then
+      table.insert(bufs, buf)
     end
+  end
+
+  -- sort by last enter time
+  table.sort(bufs, function(a, b)
+    return (vim.b[a].edgy_enter or 0) > (vim.b[b].edgy_enter or 0)
+  end)
+
+  if #bufs > 0 then
+    vim.cmd("botright sb " .. vim.api.nvim_buf_get_name(bufs[1]))
+  else
+    vim.cmd([[botright new]])
   end
 end
 

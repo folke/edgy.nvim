@@ -81,6 +81,8 @@ vim.opt.splitkeep = "screen"
       interval = 80,
     },
   },
+  -- enable this to exit Neovim when only edgy windows are left
+  exit_when_last = false,
   -- global window options for edgebar windows
   ---@type vim.wo
   wo = {
