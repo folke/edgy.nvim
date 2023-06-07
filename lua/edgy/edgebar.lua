@@ -228,11 +228,13 @@ function M:resize()
   -- views with fixed-sized windows
   local fixed = {} ---@type Edgy.Window[]
 
+  local hidden_size = self.vertical and (vim.o.laststatus == 1 or vim.o.laststatus == 2) and 2 or 1
+
   -- calculate window sizes
   local free = self.bounds[long]
   for _, win in ipairs(self.wins) do
     win[short] = self.bounds[short]
-    win[long] = 1
+    win[long] = hidden_size
     -- fixed-sized windows
     if win.visible and win.view.size[long] then
       win[long] = M.size(win.view.size[long], self.bounds[long])

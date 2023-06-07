@@ -22,8 +22,10 @@ function M.get_state(win)
       width = vim.api.nvim_win_get_width(win.win),
       height = vim.api.nvim_win_get_height(win.win),
     }
+    local hidden_size = edgebar.vertical and (vim.o.laststatus == 1 or vim.o.laststatus == 2) and 2
+      or 1
     M.state[win] = {
-      [long] = #edgebar.wins == 1 and bounds[long] or 1,
+      [long] = #edgebar.wins == 1 and bounds[long] or hidden_size,
       [short] = #edgebar.wins == 1 and 1 or edgebar.size,
     }
     for _, w in ipairs(edgebar.wins) do
