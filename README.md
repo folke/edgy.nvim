@@ -32,7 +32,17 @@ Install the plugin with your preferred package manager:
 }
 ```
 
-If you're not using **lazy.nvim**, make sure to call `require("edgy").setup(opts?)`.
+> If you're not using **lazy.nvim**, make sure to call `require("edgy").setup(opts?)`.
+
+Recommended **Neovim** options:
+
+```lua
+-- views can only be fully collapsed with the global statusline
+vim.opt.laststatus = 3
+-- Default splitting will cause your main splits to jump when opening an edgebar.
+-- To prevent this, set `splitkeep` to either `screen` or `topline`.
+vim.opt.splitkeep = "screen"
+```
 
 ## ⚙️ Configuration
 
@@ -170,6 +180,10 @@ in your layout.
 {
   "folke/edgy.nvim",
   event = "VeryLazy",
+  init = function()
+    vim.opt.laststatus = 3
+    vim.opt.splitkeep = "screen"
+  end,
   opts = {
     bottom = {
       -- toggleterm / lazyterm at the bottom with a height of 40% of the screen
