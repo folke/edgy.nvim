@@ -1,5 +1,6 @@
 local Util = require("edgy.util")
 local Config = require("edgy.config")
+local State = require("edgy.state")
 
 local M = {}
 
@@ -104,19 +105,6 @@ function M.foreach(pos, fn)
   end
 end
 
-local function save_state()
-  M.foreach({ "bottom", "top", "left", "right" }, function(edgebar)
-    edgebar:save_state()
-  end)
-end
-
-local function restore_state()
-  -- restore window state (topline)
-  for _, edgebar in pairs(Config.layout) do
-    edgebar:restore_state()
-  end
-end
-
 ---@return boolean changed whether the layout changed
 local function update()
   ---@type table<string, number[]>
@@ -152,20 +140,38 @@ function M.layout(opts)
   end
 
   if opts.full and needs_layout then
+    State.save()
     Util.debug("full layout")
     M.foreach({ "bottom", "top", "left", "right" }, function(edgebar)
       edgebar:layout()
     end)
-  else
-    -- only save state if the layout is intact
-    save_state()
+    -- State.restore()
   end
 
+  local updated = false
   M.foreach({ "left", "right", "bottom", "top" }, function(edgebar)
-    edgebar:resize()
+    if edgebar:resize() then
+      if not updated then
+        State.save()
+        updated = true
+      end
+      if not Config.animate.enabled then
+        for _, win in ipairs(edgebar.wins) do
+          win:resize()
+        end
+      end
+    end
   end)
 
-  restore_state()
+  if updated then
+    if Config.animate.enabled then
+      require("edgy.animate").update()
+    else
+      Util.debug("resize")
+      State.restore()
+    end
+  end
+
   return true
 end
 
@@ -174,7 +180,7 @@ M.resize = Util.debounce(M.layout, 50)
 
 M.update = Util.with_retry(Util.noautocmd(function()
   if not M.layout({ full = true }) then
-    M.resize()
+    M.layout()
   end
 end))
 

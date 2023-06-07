@@ -126,6 +126,7 @@ function M.setup(opts)
   vim.api.nvim_set_hl(0, "EdgyNormal", { default = true, link = "NormalFloat" })
 
   require("edgy.editor").setup()
+  require("edgy.state").setup()
 
   local group = vim.api.nvim_create_augroup("layout", { clear = true })
   vim.api.nvim_create_autocmd({ "BufWinEnter", "WinResized" }, {

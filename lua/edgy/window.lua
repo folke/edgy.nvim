@@ -70,7 +70,7 @@ function M:show(visibility)
   end
 
   vim.cmd([[redrawstatus!]])
-  self.view.edgebar:resize()
+  require("edgy.layout").update()
 end
 
 function M:hide()
@@ -162,6 +162,11 @@ function M:winbar()
   parts[#parts + 1] = "%T"
 
   return table.concat(parts)
+end
+
+function M:needs_resize()
+  return self.width ~= vim.api.nvim_win_get_width(self.win)
+    or self.height ~= vim.api.nvim_win_get_height(self.win)
 end
 
 function M:resize()

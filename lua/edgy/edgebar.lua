@@ -21,7 +21,6 @@ local wincmds = {
 ---@field wins Edgy.Window[]
 ---@field size integer
 ---@field vertical boolean
----@field state table<window,any>
 ---@field wo? vim.wo
 ---@field dirty boolean
 ---@field visible number
@@ -52,7 +51,6 @@ function M.new(pos, opts)
   self.vertical = vertical
   self.wins = {}
   self.visible = 0
-  self.state = {}
   self.wo = opts.wo
   self.dirty = true
   self.bounds = { width = 0, height = 0 }
@@ -255,46 +253,9 @@ function M:resize()
     end
   end
 
-  if Config.animate.enabled then
-    require("edgy.animate").update()
-  else
-    -- resize windows
-    local updates = {}
-    for _, win in ipairs(self.wins) do
-      local changes = win:resize()
-      if not vim.tbl_isempty(changes) then
-        updates[#updates + 1] = { win.view.title, changes }
-      end
-    end
-  end
-  -- if #updates > 0 then
-  --   dd("resize", updates)
-  -- end
-end
-
--- Save window state.
--- For hidden windows, save the previous state.
-function M:save_state()
-  local prev_state = self.state
-  self.state = {}
   for _, win in ipairs(self.wins) do
-    if win.visible or not prev_state[win.win] then
-      vim.api.nvim_win_call(win.win, function()
-        self.state[win.win] = vim.fn.winsaveview()
-      end)
-    else
-      self.state[win.win] = prev_state[win.win]
-    end
-  end
-end
-
-function M:restore_state()
-  for _, win in ipairs(self.wins) do
-    local state = self.state[win.win]
-    if state and win.visible then
-      vim.api.nvim_win_call(win.win, function()
-        vim.fn.winrestview({ topline = state.topline, leftcol = state.leftcol })
-      end)
+    if win:needs_resize() then
+      return true
     end
   end
 end

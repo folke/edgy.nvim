@@ -1,13 +1,13 @@
 local Layout = require("edgy.layout")
 local Util = require("edgy.util")
 local Config = require("edgy.config")
+local State = require("edgy.state")
 
 local M = {}
 
 ---@class Edgy.Animate
 ---@field height number
 ---@field width number
----@field view? table
 
 ---@type table<Edgy.Window, Edgy.Animate>
 M.state = setmetatable({}, { __mode = "k" })
@@ -25,7 +25,6 @@ function M.get_state(win)
     M.state[win] = {
       [long] = #edgebar.wins == 1 and bounds[long] or 1,
       [short] = #edgebar.wins == 1 and 1 or edgebar.size,
-      view = vim.api.nvim_win_call(win.win, vim.fn.winsaveview),
     }
     for _, w in ipairs(edgebar.wins) do
       M.state[win][short] = math.max(M.state[win][short], M.state[w] and M.state[w][short] or 0)
@@ -56,21 +55,6 @@ function M.step(win, step)
   return updated
 end
 
----@param win Edgy.Window
-function M.check_view(win)
-  local state = M.get_state(win)
-  if
-    not state.view
-    or (
-      win.visible
-      and win.height == vim.api.nvim_win_get_height(win.win)
-      and win.width == vim.api.nvim_win_get_width(win.win)
-    )
-  then
-    state.view = vim.api.nvim_win_call(win.win, vim.fn.winsaveview)
-  end
-end
-
 function M.wins()
   local wins = {} ---@type Edgy.Window[]
   Layout.foreach({ "bottom", "top", "left", "right" }, function(edgebar)
@@ -83,38 +67,16 @@ function M.wins()
   return wins
 end
 
-function M.restore_views(wins, full)
-  wins = wins or M.wins()
-  for _, win in ipairs(wins) do
-    local state = M.get_state(win)
-    if state.view then
-      vim.api.nvim_win_call(win.win, function()
-        if full then
-          vim.fn.winrestview(state.view)
-        else
-          vim.fn.winrestview({ topline = state.view.topline, leftcol = state.view.leftcol })
-        end
-      end)
-    end
-  end
-end
-
 function M.animate(step)
   local wins = M.wins()
-
-  for _, win in ipairs(wins) do
-    M.check_view(win)
-  end
-
+  State.save()
   local updated = false
   for _, win in ipairs(wins) do
     if M.step(win, step) then
       updated = true
     end
   end
-
-  M.restore_views(wins)
-
+  State.restore()
   return updated
 end
 
@@ -135,7 +97,6 @@ function M.schedule()
       if M.animate() then
         M.schedule()
       else
-        M.restore_views(nil, true)
         Util.debug("animation complete")
         Config.animate.on_end()
       end
