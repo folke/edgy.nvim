@@ -176,7 +176,12 @@ function M:layout()
     end
     -- move other windows to the end of the edgebar
     if last then
-      local ok, err = pcall(vim.fn.win_splitmove, w.win, last, { vertical = not self.vertical })
+      local ok, err = pcall(
+        vim.fn.win_splitmove,
+        w.win,
+        last,
+        { vertical = not self.vertical, rightbelow = true }
+      )
       if not ok then
         error("Edgy: Failed to layout windows.\n" .. err .. "\n" .. vim.inspect({
           win = vim.bo[vim.api.nvim_win_get_buf(w.win)].ft,
