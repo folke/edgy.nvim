@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/folke/edgy.nvim/compare/v1.2.0...v1.3.0) (2023-06-07)
+
+
+### Features
+
+* optionally exit Neovim when the last main window was closed ([45a6322](https://github.com/folke/edgy.nvim/commit/45a6322f444e7b6c23f0228e60b6495ca7cfc179))
+
+
+### Bug Fixes
+
+* **layout:** always use rightbelow for splitmove. Fixes [#14](https://github.com/folke/edgy.nvim/issues/14) ([d0d3e22](https://github.com/folke/edgy.nvim/commit/d0d3e22bfdfaa551e7247659a875ae6f90fde0db))
+* **layout:** take laststatus=1 or 2 into account when calculating collpased height ([df1abc9](https://github.com/folke/edgy.nvim/commit/df1abc98db91e5aed486ee2a542b1747ddea50c8))
+* much better view state management. Fixes issue with splitkeep and jumping to loc ([482e127](https://github.com/folke/edgy.nvim/commit/482e127dde1a0365c3b2b78926ade92cd36bf564))
+
 ## [1.2.0](https://github.com/folke/edgy.nvim/compare/v1.1.0...v1.2.0) (2023-06-06)
 
 
