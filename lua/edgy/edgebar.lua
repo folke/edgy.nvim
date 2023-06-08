@@ -268,7 +268,7 @@ end
 
 function M:open()
   for _, view in ipairs(self.views) do
-    if #view.wins == 0 and view.pinned then
+    if view.pinned and (#view.wins == 0 or view.wins[1]:is_pinned()) then
       view:open_pinned()
     end
   end
