@@ -1,7 +1,6 @@
 local View = require("edgy.view")
 local Util = require("edgy.util")
 local Editor = require("edgy.editor")
-local Config = require("edgy.config")
 
 ---@class Edgy.Edgebar.Opts
 ---@field views (Edgy.View.Opts|string)[]

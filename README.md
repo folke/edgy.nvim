@@ -18,6 +18,16 @@ bringing a new edge to your workflow.
   with plugins like [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim),
   [bufferline.nvim](https://github.com/akinsho/bufferline.nvim)
 
+## ⚠️ Limitations
+
+- fully **collapsing** windows only works with the global statusline.
+- **edgebar** windows can not be **resized** manually.
+  It's tricky to detect if a window was resized by the user or by a plugin.
+  I may look into adding this feature in the future.
+- requires **Neovim >= 0.9.2** or **Neovim >= 0.10.0 (after June 5, 2023)**
+  for proper folding. If you're on an older nightly, you can set `fix_win_height`
+  to `true` to make it work.
+
 ## 📦 Installation
 
 Install the plugin with your preferred package manager:
