@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/folke/edgy.nvim/compare/v1.3.0...v1.4.0) (2023-06-08)
+
+
+### Features
+
+* added edgy.open to open all pinned views in a given sidebar (or all) ([0f40452](https://github.com/folke/edgy.nvim/commit/0f40452201f9f5d2b0f2528c1657c21ecbb370df))
+
+
+### Bug Fixes
+
+* **windows:** add winhl instead of overwriting. Can also be set to "" to prevent edge changing winhl. Fixes [#15](https://github.com/folke/edgy.nvim/issues/15) ([779fdd8](https://github.com/folke/edgy.nvim/commit/779fdd85d930e75579870857a4d6abe9427abaad))
+
 ## [1.3.0](https://github.com/folke/edgy.nvim/compare/v1.2.0...v1.3.0) (2023-06-07)
 
 
