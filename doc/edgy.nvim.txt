@@ -5,6 +5,7 @@ Table of Contents                                *edgy.nvim-table-of-contents*
 
 1. 🪟 edgy.nvim                                   |edgy.nvim-🪟-edgy.nvim|
   - Features                               |edgy.nvim-🪟-edgy.nvim-features|
+  - Limitations                         |edgy.nvim-🪟-edgy.nvim-limitations|
   - Installation                       |edgy.nvim-🪟-edgy.nvim-installation|
   - Configuration                     |edgy.nvim-🪟-edgy.nvim-configuration|
   - Usage                                     |edgy.nvim-🪟-edgy.nvim-usage|
@@ -30,6 +31,17 @@ FEATURES                                   *edgy.nvim-🪟-edgy.nvim-features*
     for snippets to integrate even better
     with plugins like neo-tree.nvim <https://github.com/nvim-neo-tree/neo-tree.nvim>,
     bufferline.nvim <https://github.com/akinsho/bufferline.nvim>
+
+
+LIMITATIONS                             *edgy.nvim-🪟-edgy.nvim-limitations*
+
+- fully **collapsing** windows only works with the global statusline.
+- **edgebar** windows can not be **resized** manually.
+    It’s tricky to detect if a window was resized by the user or by a plugin.
+    I may look into adding this feature in the future.
+- requires **Neovim >= 0.9.2** or **Neovim >= 0.10.0 (after June 5, 2023)**
+    for proper folding. If you’re on an older nightly, you can set `fix_win_height`
+    to `true` to make it work.
 
 
 INSTALLATION                           *edgy.nvim-🪟-edgy.nvim-installation*
