@@ -77,7 +77,6 @@ end
 -- Returns a table of all windows in the current tab
 -- grouped by edgy, main and floating
 function M.list_wins()
-  local Config = require("edgy.config")
   ---@class Edgy.list_wins
   local wins = {
     ---@type table<window, window>
@@ -109,7 +108,6 @@ end
 ---@param pos? Edgy.Pos
 ---@param filter? fun(win:Edgy.Window):boolean
 function M.select(pos, filter)
-  local Config = require("edgy.config")
   local wins = {}
   for p, edgebar in pairs(Config.layout) do
     if p == pos or pos == nil then
@@ -163,7 +161,6 @@ end
 
 ---@param win? window
 function M.get_win(win)
-  local Config = require("edgy.config")
   win = win or vim.api.nvim_get_current_win()
   for _, edgebar in pairs(Config.layout) do
     for _, w in ipairs(edgebar.wins) do
@@ -176,10 +173,18 @@ end
 
 ---@param pos? Edgy.Pos
 function M.close(pos)
-  local Config = require("edgy.config")
   for p, edgebar in pairs(Config.layout) do
     if p == pos or pos == nil then
       edgebar:close()
+    end
+  end
+end
+
+---@param pos? Edgy.Pos
+function M.open(pos)
+  for p, edgebar in pairs(Config.layout) do
+    if p == pos or pos == nil then
+      edgebar:open()
     end
   end
 end

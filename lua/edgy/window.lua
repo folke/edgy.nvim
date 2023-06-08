@@ -62,7 +62,7 @@ function M:show(visibility)
   self.visible = visibility == nil and true or visibility or false
   if self.visible and self:is_pinned() then
     -- self.visible = false
-    return self:open()
+    return self.view:open_pinned()
   end
 
   if not self.visible then
@@ -114,25 +114,6 @@ end
 
 function M:focus()
   vim.api.nvim_set_current_win(self.win)
-end
-
-function M:open()
-  if self.opening then
-    return
-  end
-  self.opening = true
-  vim.schedule(function()
-    Editor:goto_main()
-    if type(self.view.open) == "function" then
-      Util.try(self.view.open)
-    elseif type(self.view.open) == "string" then
-      Util.try(function()
-        vim.cmd(self.view.open)
-      end)
-    else
-      Util.error("View is pinned and has no open function")
-    end
-  end)
 end
 
 function M:is_pinned()

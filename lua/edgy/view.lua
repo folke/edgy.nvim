@@ -1,5 +1,6 @@
 local Window = require("edgy.window")
 local Editor = require("edgy.editor")
+local Util = require("edgy.util")
 
 ---@class Edgy.View.Opts
 ---@field ft string
@@ -109,6 +110,21 @@ function M:hide_pinned(opts)
     vim.api.nvim_win_close(self.pinned_win.win, true)
     self.pinned_win = nil
   end
+end
+
+function M:open_pinned()
+  vim.schedule(function()
+    Editor:goto_main()
+    if type(self.open) == "function" then
+      Util.try(self.open)
+    elseif type(self.open) == "string" then
+      Util.try(function()
+        vim.cmd(self.open)
+      end)
+    else
+      Util.error("View is pinned and has no open function")
+    end
+  end)
 end
 
 return M

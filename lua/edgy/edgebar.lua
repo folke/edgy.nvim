@@ -266,6 +266,14 @@ function M:resize()
   end
 end
 
+function M:open()
+  for _, view in ipairs(self.views) do
+    if #view.wins == 0 and view.pinned then
+      view:open_pinned()
+    end
+  end
+end
+
 function M:close()
   for _, win in ipairs(self.wins) do
     pcall(vim.api.nvim_win_close, win.win, true)

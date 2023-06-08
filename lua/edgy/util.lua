@@ -1,6 +1,6 @@
 local M = {}
 
----@param opts {finally:fun()}
+---@param opts? {finally:fun()}
 function M.try(fn, opts)
   opts = opts or {}
   local ok, err = pcall(fn)
