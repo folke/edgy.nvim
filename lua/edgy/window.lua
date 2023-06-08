@@ -42,10 +42,12 @@ function M.new(win, view)
     -- special treatment for winhighlight
     -- add to existing winhighlight
     if k == "winhighlight" then
-      local whl = vim.wo[self.win].winhighlight
-      if whl ~= "" then
-        v = whl .. "," .. v
-      end
+      local whl = vim.split(vim.wo[self.win].winhighlight, ",")
+      vim.list_extend(whl, vim.split(v, ","))
+      whl = vim.tbl_filter(function(hl)
+        return hl ~= ""
+      end, whl)
+      v = table.concat(whl, ",")
     end
     vim.api.nvim_set_option_value(k, v, { scope = "local", win = win })
   end
