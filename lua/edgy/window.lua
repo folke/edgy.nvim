@@ -39,6 +39,14 @@ function M.new(win, view)
     wo.winbar = nil
   end
   for k, v in pairs(wo) do
+    -- special treatment for winhighlight
+    -- add to existing winhighlight
+    if k == "winhighlight" then
+      local whl = vim.wo[self.win].winhighlight
+      if whl ~= "" then
+        v = whl .. "," .. v
+      end
+    end
     vim.api.nvim_set_option_value(k, v, { scope = "local", win = win })
   end
   vim.api.nvim_create_autocmd("WinClosed", {
