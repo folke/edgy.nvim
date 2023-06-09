@@ -1,6 +1,4 @@
-local Util = require("edgy.util")
 local Config = require("edgy.config")
-local Editor = require("edgy.editor")
 
 ---@class Edgy.Window
 ---@field visible boolean
@@ -8,7 +6,6 @@ local Editor = require("edgy.editor")
 ---@field win window
 ---@field width? number
 ---@field height? number
----@field opening boolean
 ---@field idx integer
 local M = {}
 M.__index = M
@@ -25,7 +22,6 @@ function M.new(win, view)
   self.idx = 1
   self.win = win
   M.cache[win] = self
-  self.opening = false
 
   ---@type vim.wo
   local wo = vim.tbl_deep_extend("force", {}, Config.wo, view.edgebar.wo or {}, view.wo or {})
@@ -139,9 +135,9 @@ function M:winbar()
   local parts = {}
 
   parts[#parts + 1] = "%" .. self.win .. "@v:lua.edgy_click@"
-  local icon_hl = self:is_pinned() and not self.opening and "EdgyIcon" or "EdgyIconActive"
+  local icon_hl = self:is_pinned() and not self.view.opening and "EdgyIcon" or "EdgyIconActive"
   local icon = self.visible and Config.icons.open or Config.icons.closed
-  if self.opening then
+  if self.view.opening then
     local spinner = Config.animate.spinner
     local ms = vim.loop.hrtime() / 1000000
     local frame = math.floor(ms / spinner.interval) % #spinner.frames

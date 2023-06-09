@@ -20,6 +20,7 @@ local Util = require("edgy.util")
 ---@field size Edgy.Size
 ---@field pinned_win? Edgy.Window
 ---@field edgebar Edgy.Edgebar
+---@field opening boolean
 local M = {}
 M.__index = M
 
@@ -30,6 +31,7 @@ function M.new(opts, edgebar)
   self.wins = {}
   self.title = self.title or self.ft:sub(1, 1):upper() .. self.ft:sub(2)
   self.size = self.size or {}
+  self.opening = false
   return self
 end
 
@@ -48,6 +50,9 @@ function M:update(wins)
     if not self.filter or self.filter(buf, win) then
       self.wins[#self.wins + 1] = index[win] or Window.new(win, self)
     end
+  end
+  if #self.wins > 0 then
+    self.opening = false
   end
   return not vim.deep_equal(old, self.wins)
 end
@@ -113,6 +118,7 @@ function M:hide_pinned(opts)
 end
 
 function M:open_pinned()
+  self.opening = true
   vim.schedule(function()
     Editor:goto_main()
     if type(self.open) == "function" then
