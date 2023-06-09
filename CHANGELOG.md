@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0](https://github.com/folke/edgy.nvim/compare/v1.4.0...v1.5.0) (2023-06-09)
+
+
+### Features
+
+* **commands:** added `require("edgy").toggle()` ([280cf44](https://github.com/folke/edgy.nvim/commit/280cf444c076e8e849fbcfea5eac2569b6dfeb50))
+
+
+### Bug Fixes
+
+* **view:** fixed opening state of pinned views ([fa28a44](https://github.com/folke/edgy.nvim/commit/fa28a44f901e0ab5d51fff317565dd942ed36040))
+* **view:** open pinned when edgebar is active ([f4f2d0f](https://github.com/folke/edgy.nvim/commit/f4f2d0fdaf73f282b38527cd8aac04cda33bcecf))
+
 ## [1.4.0](https://github.com/folke/edgy.nvim/compare/v1.3.0...v1.4.0) (2023-06-08)
 
 
