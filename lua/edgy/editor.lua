@@ -189,4 +189,21 @@ function M.open(pos)
   end
 end
 
+---@param pos? Edgy.Pos
+function M.toggle(pos)
+  local has_open = false
+  for p, edgebar in pairs(Config.layout) do
+    if p == pos or pos == nil then
+      if #edgebar.wins > 0 then
+        has_open = true
+      end
+    end
+  end
+  if has_open then
+    M.close(pos)
+  else
+    M.open(pos)
+  end
+end
+
 return M
