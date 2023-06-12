@@ -59,6 +59,11 @@ function M.new(win, view)
   return self
 end
 
+---@param dim "width" | "height"
+function M:dim(dim)
+  return vim.w[self.win]["edgy_" .. dim] or self.view.size[dim]
+end
+
 function M:is_valid()
   return vim.api.nvim_win_is_valid(self.win)
 end
@@ -156,7 +161,22 @@ function M:needs_resize()
     or self.height ~= vim.api.nvim_win_get_height(self.win)
 end
 
-function M:resize()
+-- Resize the given dimension by the given amount
+-- When amount is nil, reset to the default size
+---@param dim "width" | "height"
+---@param amount number? Defaults to 2
+function M:resize(dim, amount)
+  local value = vim.w[self.win]["edgy_" .. dim] or self[dim]
+  value = value + (amount or 0)
+  if not amount or value == self[dim] then
+    vim.w[self.win]["edgy_" .. dim] = nil
+    return
+  end
+  vim.w[self.win]["edgy_" .. dim] = value
+  require("edgy.layout").update()
+end
+
+function M:apply_size()
   if not self:is_valid() then
     return
   end

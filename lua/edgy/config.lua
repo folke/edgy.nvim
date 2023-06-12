@@ -84,6 +84,26 @@ local defaults = {
     ["[W"] = function(win)
       win:prev({ pinned = false, focus = true })
     end,
+    -- increase width
+    ["<c-w>>"] = function(win)
+      win:resize("width", 2)
+    end,
+    -- decrease width
+    ["<c-w><lt>"] = function(win)
+      win:resize("width", -2)
+    end,
+    -- increase height
+    ["<c-w>+"] = function(win)
+      win:resize("height", 2)
+    end,
+    -- decrease height
+    ["<c-w>-"] = function(win)
+      win:resize("height", -2)
+    end,
+    -- reset all custom sizing
+    ["<c-w>="] = function(win)
+      win.view.edgebar:equalize()
+    end,
   },
   icons = {
     closed = " ",

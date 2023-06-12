@@ -213,7 +213,7 @@ function M:resize()
   -- calculate the edgebar bounds
   for _, win in ipairs(self.wins) do
     if win.visible then
-      local size = M.size(win.view.size[short] or 0, self.vertical and vim.o.columns or vim.o.lines)
+      local size = M.size(win:dim(short) or 0, self.vertical and vim.o.columns or vim.o.lines)
       self.bounds[short] = math.max(self.bounds[short], size)
     end
     local size = self.vertical and vim.api.nvim_win_get_height(win.win)
@@ -235,8 +235,9 @@ function M:resize()
     win[short] = self.bounds[short]
     win[long] = hidden_size
     -- fixed-sized windows
-    if win.visible and win.view.size[long] then
-      win[long] = M.size(win.view.size[long], self.bounds[long])
+    local dim = win:dim(long)
+    if win.visible and dim then
+      win[long] = M.size(dim, self.bounds[long])
       fixed[#fixed + 1] = win
     -- auto-sized windows
     elseif win.visible then
@@ -250,11 +251,15 @@ function M:resize()
 
   -- distribute free space to auto-sized windows,
   -- or fixed-sized windows when there are no auto-sized windows
+  local subtract = free < 0
+  if subtract then
+    free = math.abs(free)
+  end
   if free > 0 then
     local _wins = #auto > 0 and auto or #fixed > 0 and fixed or self.wins
     local extra = math.ceil(free / #_wins)
     for _, win in ipairs(_wins) do
-      win[long] = win[long] + math.min(extra, free)
+      win[long] = win[long] + (subtract and -1 or 1) * math.min(extra, free)
       free = math.max(free - extra, 0)
     end
   end
@@ -272,6 +277,14 @@ function M:open()
       view:open_pinned()
     end
   end
+end
+
+function M:equalize()
+  for _, win in ipairs(self.wins) do
+    vim.w[win.win].edgy_width = nil
+    vim.w[win.win].edgy_height = nil
+  end
+  require("edgy.layout").update()
 end
 
 function M:close()

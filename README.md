@@ -21,9 +21,10 @@ bringing a new edge to your workflow.
 ## ⚠️ Limitations
 
 - fully **collapsing** windows only works with the global statusline.
-- **edgebar** windows can not be **resized** manually.
+- **edgebar** windows can not be **resized** like normal windows.
   It's tricky to detect if a window was resized by the user or by a plugin.
-  I may look into adding this feature in the future.
+  Check the config section about `keys`. Regular window keymaps have been added
+  for resizing windows.
 - requires **Neovim >= 0.9.2** or **Neovim >= 0.10.0 (after June 5, 2023)**
   for proper folding. If you're on an older nightly, you can set `fix_win_height`
   to `true` to make it work.

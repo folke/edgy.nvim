@@ -190,6 +190,15 @@ function M.open(pos)
 end
 
 ---@param pos? Edgy.Pos
+function M.equalize(pos)
+  for p, edgebar in pairs(Config.layout) do
+    if p == pos or pos == nil then
+      edgebar:equalize()
+    end
+  end
+end
+
+---@param pos? Edgy.Pos
 function M.toggle(pos)
   local has_open = false
   for p, edgebar in pairs(Config.layout) do

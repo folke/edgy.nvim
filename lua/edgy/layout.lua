@@ -157,7 +157,7 @@ function M.layout(opts)
       end
       if not Config.animate.enabled then
         for _, win in ipairs(edgebar.wins) do
-          win:resize()
+          win:apply_size()
         end
       end
     end
