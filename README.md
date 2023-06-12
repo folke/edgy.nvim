@@ -284,7 +284,7 @@ in your layout.
       {
         ft = "Outline",
         pinned = true,
-        open = "SymbolsOutline",
+        open = "SymbolsOutlineOpen",
       },
       -- any other neo-tree windows
       "neo-tree",
