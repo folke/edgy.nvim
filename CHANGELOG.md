@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/folke/edgy.nvim/compare/v1.5.0...v1.6.0) (2023-06-16)
+
+
+### Features
+
+* you can now resize edgy windows. See the readme for more details ([8aa7a0e](https://github.com/folke/edgy.nvim/commit/8aa7a0e1f74cb7fdb7becb76d7ed4526d28f757b))
+
+
+### Bug Fixes
+
+* **animate:** don't animate terminal windows since it conflicts with reflow and can cause segfaults. Fixes [#23](https://github.com/folke/edgy.nvim/issues/23) ([408d053](https://github.com/folke/edgy.nvim/commit/408d05303853092276b1c69a73bfbde246636e2a))
+
 ## [1.5.0](https://github.com/folke/edgy.nvim/compare/v1.4.0...v1.5.0) (2023-06-09)
 
 
