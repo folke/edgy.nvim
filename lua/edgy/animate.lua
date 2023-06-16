@@ -40,13 +40,18 @@ function M.step(win, step)
   step = step or (Config.animate.cps / Config.animate.fps)
   local state = M.get_state(win)
   local updated = false
+  local buf = vim.api.nvim_win_get_buf(win.win)
   for _, key in ipairs({ "width", "height" }) do
     local current = vim.api["nvim_win_get_" .. key](win.win)
-    if win[key] and state[key] ~= win[key] then
-      if state[key] > win[key] then
-        state[key] = math.max(state[key] - step, win[key])
-      else
-        state[key] = math.min(state[key] + step, win[key])
+    if vim.bo[buf].buftype == "terminal" then
+      state[key] = win[key]
+    else
+      if win[key] and state[key] ~= win[key] then
+        if state[key] > win[key] then
+          state[key] = math.max(state[key] - step, win[key])
+        else
+          state[key] = math.min(state[key] + step, win[key])
+        end
       end
     end
     if current ~= state[key] then
