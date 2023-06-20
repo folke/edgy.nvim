@@ -102,7 +102,7 @@ function M:on_hide(win)
     return
   end
   if #real == 0 then
-    self:close()
+    return self:close()
   end
 
   table.sort(real, function(a, b)
