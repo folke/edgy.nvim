@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/folke/edgy.nvim/compare/v1.6.0...v1.6.1) (2023-06-21)
+
+
+### Bug Fixes
+
+* return when no real windows found ([0ffa543](https://github.com/folke/edgy.nvim/commit/0ffa543df455a442ed0dac9f307557e0ff579118))
+
 ## [1.6.0](https://github.com/folke/edgy.nvim/compare/v1.5.0...v1.6.0) (2023-06-16)
 
 
