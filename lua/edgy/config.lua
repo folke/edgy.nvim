@@ -38,6 +38,8 @@ local defaults = {
   },
   -- enable this to exit Neovim when only edgy windows are left
   exit_when_last = false,
+  -- close edgy when all windows are hidden instead of opening one of them
+  close_when_all_hidden = false,
   -- global window options for edgebar windows
   ---@type vim.wo
   wo = {
