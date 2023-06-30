@@ -98,10 +98,15 @@ function M:on_hide(win)
       end
     end
   end
+
   if visible > 0 then
     return
   end
   if #real == 0 then
+    return self:close()
+  end
+
+  if visible == 0 and require("edgy.config").close_when_all_hidden then
     return self:close()
   end
 
