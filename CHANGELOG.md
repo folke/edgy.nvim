@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/folke/edgy.nvim/compare/v1.6.1...v1.7.0) (2023-06-30)
+
+
+### Features
+
+* **option:** allow closing edgy when all windows are hidden ([#30](https://github.com/folke/edgy.nvim/issues/30)) ([c925031](https://github.com/folke/edgy.nvim/commit/c9250315f26784bd890373e0a87e4bbacb106d70))
+
 ## [1.6.1](https://github.com/folke/edgy.nvim/compare/v1.6.0...v1.6.1) (2023-06-21)
 
 
