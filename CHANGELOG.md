@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/folke/edgy.nvim/compare/v1.7.0...v1.8.0) (2023-07-25)
+
+
+### Features
+
+* allow configuring window size with functions ([#39](https://github.com/folke/edgy.nvim/issues/39)) ([7506f83](https://github.com/folke/edgy.nvim/commit/7506f830de2b35cc13f940d9d74d43a2db50fe99))
+
 ## [1.7.0](https://github.com/folke/edgy.nvim/compare/v1.6.1...v1.7.0) (2023-06-30)
 
 
