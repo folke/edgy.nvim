@@ -69,7 +69,7 @@ vim.opt.splitkeep = "screen"
   right = {}, ---@type (Edgy.View.Opts|string)[]
   top = {}, ---@type (Edgy.View.Opts|string)[]
 
-  ---@type table<Edgy.Pos, {size:integer, wo?:vim.wo}>
+  ---@type table<Edgy.Pos, {size:integer | fun():integer, wo?:vim.wo}>
   options = {
     left = { size = 30 },
     bottom = { size = 10 },
@@ -184,7 +184,7 @@ vim.opt.splitkeep = "screen"
 | **ft**       | `string`                       | File type of the view                                                                                       |
 | **filter**   | `fun(buf:buffer, win:window)?` | Optional function to filter buffers and windows                                                             |
 | **title**    | `string?`                      | Optional title of the view. Defaults to the capitalized filetype                                            |
-| **size**     | `number`                       | Size of the short edge of the edgebar. For edgebars, this is the minimum width. For panels, minimum height. |
+| **size**     | `number` or `fun():number`     | Size of the short edge of the edgebar. For edgebars, this is the minimum width. For panels, minimum height. |
 | **pinned**   | `boolean?`                     | If true, the view will always be shown in the edgebar even when it has no windows                           |
 | **open**     | `fun()` or `string`            | Function or command to open a pinned view                                                                   |
 | **wo**       | `vim.wo?`                      | View-specific window options                                                                                |
