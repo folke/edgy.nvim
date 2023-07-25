@@ -1,4 +1,4 @@
-*edgy.nvim.txt*          For Neovim >= 0.8.0         Last change: 2023 July 01
+*edgy.nvim.txt*          For Neovim >= 0.8.0         Last change: 2023 July 25
 
 ==============================================================================
 Table of Contents                                *edgy.nvim-table-of-contents*
@@ -87,7 +87,7 @@ CONFIGURATION                         *edgy.nvim-🪟-edgy.nvim-configuration*
       right = {}, ---@type (Edgy.View.Opts|string)[]
       top = {}, ---@type (Edgy.View.Opts|string)[]
     
-      ---@type table<Edgy.Pos, {size:integer, wo?:vim.wo}>
+      ---@type table<Edgy.Pos, {size:integer | fun():integer, wo?:vim.wo}>
       options = {
         left = { size = 30 },
         bottom = { size = 10 },
@@ -208,7 +208,7 @@ EDGY.VIEW.OPTS ~
   title      string?                        Optional title of the view. Defaults to the
                                             capitalized filetype
 
-  size       number                         Size of the short edge of the edgebar. For
+  size       number or fun():number         Size of the short edge of the edgebar. For
                                             edgebars, this is the minimum width. For panels,
                                             minimum height.
 
