@@ -185,6 +185,9 @@ function M:apply_size()
   for _, key in ipairs({ "width", "height" }) do
     local current = vim.api["nvim_win_get_" .. key](self.win)
     local needed = self[key]
+    if type(needed) == "function" then
+      needed = needed()
+    end
     if current ~= needed then
       changes[key] = { current, needed }
       vim.api["nvim_win_set_" .. key](self.win, needed)

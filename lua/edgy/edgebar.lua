@@ -32,9 +32,12 @@ M.__index = M
 ---@field width? number
 ---@field height? number
 
----@param size number
+---@param size number | fun(): number
 ---@param max number
 function M.size(size, max)
+  if type(size) == "function" then
+    size = size()
+  end
   return math.max(size < 1 and math.floor(max * size) or size, 1)
 end
 

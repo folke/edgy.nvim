@@ -26,7 +26,8 @@ function M.get_state(win)
       or 1
     M.state[win] = {
       [long] = #edgebar.wins == 1 and bounds[long] or hidden_size,
-      [short] = #edgebar.wins == 1 and 1 or edgebar.size,
+      [short] = #edgebar.wins == 1 and 1
+        or (type(edgebar.size) == "function" and edgebar.size() or edgebar.size),
     }
     for _, w in ipairs(edgebar.wins) do
       M.state[win][short] = math.max(M.state[win][short], M.state[w] and M.state[w][short] or 0)
@@ -43,21 +44,25 @@ function M.step(win, step)
   local buf = vim.api.nvim_win_get_buf(win.win)
   for _, key in ipairs({ "width", "height" }) do
     local current = vim.api["nvim_win_get_" .. key](win.win)
+    local dim = win[key]
+    if dim and type(dim) == "function" then
+      dim = dim()
+    end
     if vim.bo[buf].buftype == "terminal" then
-      state[key] = win[key]
+      state[key] = dim
     else
-      if win[key] and state[key] ~= win[key] then
-        if state[key] > win[key] then
-          state[key] = math.max(state[key] - step, win[key])
+      if dim and state[key] ~= dim then
+        if state[key] > dim then
+          state[key] = math.max(state[key] - step, dim)
         else
-          state[key] = math.min(state[key] + step, win[key])
+          state[key] = math.min(state[key] + step, dim)
         end
       end
     end
     if current ~= state[key] then
       vim.api["nvim_win_set_" .. key](win.win, math.floor(state[key] + 0.5))
     end
-    updated = updated or current ~= win[key]
+    updated = updated or current ~= dim
   end
   return updated
 end
