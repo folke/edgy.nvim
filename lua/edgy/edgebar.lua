@@ -252,7 +252,13 @@ function M:resize()
       auto[#auto + 1] = win
     -- hidden windows
     else
-      win[long] = self.vertical and 1 or (vim.fn.strdisplaywidth(win.view.title) + 3)
+      win[long] = self.vertical and 1
+        or (
+          vim.api.nvim_eval_statusline(win.view.title, {
+            use_winbar = true,
+            winid = win.win,
+          }).width + 3
+        )
     end
     free = free - win[long]
   end
