@@ -62,7 +62,16 @@ function M.new(pos, opts)
     table.insert(self.views, View.new(v, self))
   end
   self:on_win_enter()
+  self:on_buf_win_enter()
   return self
+end
+
+function M:on_buf_win_enter()
+  vim.api.nvim_create_autocmd("BufWinEnter", {
+    callback = function()
+      self:update({})
+    end,
+  })
 end
 
 function M:on_win_enter()
