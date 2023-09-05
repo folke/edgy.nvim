@@ -1,5 +1,6 @@
 local Editor = require("edgy.editor")
 local Util = require("edgy.util")
+local Config = require("edgy.config")
 
 local M = {}
 
@@ -103,7 +104,7 @@ function M.restore()
     if wins[win] and vim.api.nvim_win_is_valid(win) then
       local buf = vim.api.nvim_win_get_buf(win)
       -- never restore terminal buffers to prevent flickering
-      if vim.bo[buf].buftype ~= "terminal" then
+      if vim.bo[buf].buftype ~= "terminal" or Config.restore_terminals then
         pcall(vim.api.nvim_win_call, win, function()
           vim.fn.winrestview(s)
         end)

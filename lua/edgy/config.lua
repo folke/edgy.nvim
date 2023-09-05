@@ -41,6 +41,8 @@ local defaults = {
   -- close edgy when all windows are hidden instead of opening one of them
   -- disable to always keep at least one edgy split visible in each open section
   close_when_all_hidden = true,
+  -- always restore terminal views to prevent flickering
+  restore_terminals = false,
   -- global window options for edgebar windows
   ---@type vim.wo
   wo = {
