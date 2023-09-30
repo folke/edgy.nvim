@@ -45,10 +45,9 @@ function M.with_retry(fn, max_retries)
   local retries = 0
   local function try()
     local ok, ret = pcall(fn)
-    if ok then
-      retries = 0
-    else
-      if retries >= max_retries or require("edgy.config").debug then
+    if not ok then
+      retries = retries + 1
+      if retries >= max_retries then
         M.error(ret)
       end
       if retries < max_retries then
