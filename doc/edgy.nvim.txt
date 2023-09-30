@@ -1,25 +1,25 @@
-*edgy.nvim.txt*          For Neovim >= 0.8.0         Last change: 2023 July 25
+*edgy.nvim.txt*       For Neovim >= 0.8.0       Last change: 2023 September 30
 
 ==============================================================================
 Table of Contents                                *edgy.nvim-table-of-contents*
 
-1. 🪟 edgy.nvim                                   |edgy.nvim-🪟-edgy.nvim|
-  - Features                               |edgy.nvim-🪟-edgy.nvim-features|
-  - Limitations                         |edgy.nvim-🪟-edgy.nvim-limitations|
-  - Installation                       |edgy.nvim-🪟-edgy.nvim-installation|
-  - Configuration                     |edgy.nvim-🪟-edgy.nvim-configuration|
-  - Usage                                     |edgy.nvim-🪟-edgy.nvim-usage|
-  - 🪟 Example Setup           |edgy.nvim-🪟-edgy.nvim-🪟-example-setup|
-  - Tips & tricks                     |edgy.nvim-🪟-edgy.nvim-tips-&-tricks|
+1. edgy.nvim                                             |edgy.nvim-edgy.nvim|
+  - Features                                    |edgy.nvim-edgy.nvim-features|
+  - Limitations                              |edgy.nvim-edgy.nvim-limitations|
+  - Installation                            |edgy.nvim-edgy.nvim-installation|
+  - Configuration                          |edgy.nvim-edgy.nvim-configuration|
+  - Usage                                          |edgy.nvim-edgy.nvim-usage|
+  - Example Setup                          |edgy.nvim-edgy.nvim-example-setup|
+  - Tips & tricks                          |edgy.nvim-edgy.nvim-tips-&-tricks|
 
 ==============================================================================
-1. 🪟 edgy.nvim                                   *edgy.nvim-🪟-edgy.nvim*
+1. edgy.nvim                                             *edgy.nvim-edgy.nvim*
 
 A Neovim plugin to easily create and manage predefined window layouts, bringing
 a new edge to your workflow.
 
 
-FEATURES                                   *edgy.nvim-🪟-edgy.nvim-features*
+FEATURES                                        *edgy.nvim-edgy.nvim-features*
 
 - Automatically move windows (including floating windows) in a pre-defined layout
 - Manage layouts while keeping your main editor splits untouched.
@@ -33,7 +33,7 @@ FEATURES                                   *edgy.nvim-🪟-edgy.nvim-features*
     bufferline.nvim <https://github.com/akinsho/bufferline.nvim>
 
 
-LIMITATIONS                             *edgy.nvim-🪟-edgy.nvim-limitations*
+LIMITATIONS                                  *edgy.nvim-edgy.nvim-limitations*
 
 - fully **collapsing** windows only works with the global statusline.
 - **edgebar** windows can not be **resized** like normal windows.
@@ -48,7 +48,7 @@ LIMITATIONS                             *edgy.nvim-🪟-edgy.nvim-limitations*
     that don’t set the buffer `filetype` during the frame where the window was created.
 
 
-INSTALLATION                           *edgy.nvim-🪟-edgy.nvim-installation*
+INSTALLATION                                *edgy.nvim-edgy.nvim-installation*
 
 Install the plugin with your preferred package manager:
 
@@ -76,7 +76,7 @@ Recommended **Neovim** options:
 <
 
 
-CONFIGURATION                         *edgy.nvim-🪟-edgy.nvim-configuration*
+CONFIGURATION                              *edgy.nvim-edgy.nvim-configuration*
 
 **edgy.nvim** comes with the following defaults:
 
@@ -109,7 +109,7 @@ CONFIGURATION                         *edgy.nvim-🪟-edgy.nvim-configuration*
         -- if you have noice.nvim installed, you can use any spinner from it, like:
         -- spinner = require("noice.util.spinners").spinners.circleFull,
         spinner = {
-          frames = { "", "", "", "", "", "", "", "", "", "" },
+          frames = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
           interval = 80,
         },
       },
@@ -186,8 +186,8 @@ CONFIGURATION                         *edgy.nvim-🪟-edgy.nvim-configuration*
         end,
       },
       icons = {
-        closed = " ",
-        open = " ",
+        closed = " ",
+        open = " ",
       },
       -- enable this on Neovim <= 0.10.0 to properly fold edgebar windows.
       -- Not needed on a nightly build >= June 5, 2023.
@@ -220,7 +220,7 @@ EDGY.VIEW.OPTS ~
   wo         vim.wo?                        View-specific window options
   --------------------------------------------------------------------------------------------
 
-USAGE                                         *edgy.nvim-🪟-edgy.nvim-usage*
+USAGE                                              *edgy.nvim-edgy.nvim-usage*
 
 Just open windows/buffers as you normally do, but now they will be displayed in
 your layout.
@@ -248,7 +248,7 @@ API ~
     or the current window
 
 
-🪟 EXAMPLE SETUP               *edgy.nvim-🪟-edgy.nvim-🪟-example-setup*
+EXAMPLE SETUP                              *edgy.nvim-edgy.nvim-example-setup*
 
 >lua
     {
@@ -330,7 +330,7 @@ API ~
 <
 
 
-TIPS & TRICKS                         *edgy.nvim-🪟-edgy.nvim-tips-&-tricks*
+TIPS & TRICKS                              *edgy.nvim-edgy.nvim-tips-&-tricks*
 
 - disable edgy for a window/buffer by setting `vim.b[buf].edgy_disable` or
     `vim.w[win].edgy_disable`. You can even set this after the facts. Edgy will
