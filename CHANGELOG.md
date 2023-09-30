@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/folke/edgy.nvim/compare/v1.8.0...v1.8.1) (2023-09-30)
+
+
+### Bug Fixes
+
+* high CPU usage with invalid config (fixes [#49](https://github.com/folke/edgy.nvim/issues/49)) ([#50](https://github.com/folke/edgy.nvim/issues/50)) ([ee41d71](https://github.com/folke/edgy.nvim/commit/ee41d71429315882a75a34a165309c360cb956d7))
+
 ## [1.8.0](https://github.com/folke/edgy.nvim/compare/v1.7.0...v1.8.0) (2023-07-25)
 
 
