@@ -68,7 +68,7 @@ function M.check_main()
   end)
 
   if #bufs > 0 then
-    vim.cmd("botright sb " .. vim.api.nvim_buf_get_name(bufs[1]))
+    vim.cmd("botright sb " .. bufs[1])
   else
     vim.cmd([[botright new]])
   end
