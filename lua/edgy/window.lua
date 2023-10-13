@@ -30,7 +30,7 @@ function M.new(win, view)
     if vim.api.nvim_win_get_height(win) == 1 then
       vim.api.nvim_win_set_height(win, 2)
     end
-    wo.winbar = "%!v:lua.edgy_winbar(" .. win .. ")"
+    wo.winbar = "%{%v:lua.edgy_winbar()%}"
   elseif wo.winbar == false then
     wo.winbar = nil
   end
@@ -197,7 +197,8 @@ function M:apply_size()
 end
 
 ---@diagnostic disable-next-line: global_usage
-function _G.edgy_winbar(win)
+function _G.edgy_winbar()
+  local win = vim.api.nvim_get_current_win()
   local window = M.cache[win]
   return window and window:winbar() or ""
 end
