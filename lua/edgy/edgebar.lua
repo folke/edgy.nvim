@@ -264,12 +264,12 @@ function M:resize()
       win[long] = 1
     else
       local title_width = vim.fn.strdisplaywidth(win.view.title)
-      if vim.api.nvim_eval_statusline then
-        title_width = vim.api.nvim_eval_statusline(win.view.title, {
-          use_winbar = true,
-          winid = win.win,
-        }).width
-      end
+      -- if vim.api.nvim_eval_statusline then
+      --   title_width = vim.api.nvim_eval_statusline(win.view.title, {
+      --     use_winbar = true,
+      --     winid = win.win,
+      --   }).width
+      -- end
       win[long] = title_width + 3
     end
     free = free - win[long]
