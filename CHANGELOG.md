@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.2](https://github.com/folke/edgy.nvim/compare/v1.8.1...v1.8.2) (2023-10-13)
+
+
+### Bug Fixes
+
+* **editor:** use buf number to use as new main. ([e75283c](https://github.com/folke/edgy.nvim/commit/e75283cde36056e756f535740085d4a721786721))
+* use eval_statusline to determine title width ([#46](https://github.com/folke/edgy.nvim/issues/46)) ([f399e8f](https://github.com/folke/edgy.nvim/commit/f399e8f79a56678788cbc0cb4a4b02bed7adce42))
+
 ## [1.8.1](https://github.com/folke/edgy.nvim/compare/v1.8.0...v1.8.1) (2023-09-30)
 
 
