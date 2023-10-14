@@ -30,7 +30,7 @@ function M.new(win, view)
     if vim.api.nvim_win_get_height(win) == 1 then
       vim.api.nvim_win_set_height(win, 2)
     end
-    wo.winbar = "%!v:lua.edgy_winbar(" .. win .. ")"
+    wo.winbar = "%!v:lua.require'edgy.window'.edgy_winbar()"
   elseif wo.winbar == false then
     wo.winbar = nil
   end
@@ -139,7 +139,7 @@ function M:winbar()
   ---@type string[]
   local parts = {}
 
-  parts[#parts + 1] = "%" .. self.win .. "@v:lua.edgy_click@"
+  parts[#parts + 1] = "%" .. self.win .. "@v:lua.require'edgy.window'.edgy_click@"
   local icon_hl = self:is_pinned() and not self.view.opening and "EdgyIcon" or "EdgyIconActive"
   local icon = self.visible and Config.icons.open or Config.icons.closed
   if self.view.opening then
@@ -196,14 +196,14 @@ function M:apply_size()
   return changes
 end
 
----@diagnostic disable-next-line: global_usage
-function _G.edgy_winbar(win)
+function M.edgy_winbar()
+  local win = vim.g.statusline_winid
   local window = M.cache[win]
   return window and window:winbar() or ""
 end
 
----@diagnostic disable-next-line: global_usage
-function _G.edgy_click(win)
+function M.edgy_click()
+  local win = vim.fn.getmousepos().winid
   local window = M.cache[win]
   if window then
     window:toggle()
