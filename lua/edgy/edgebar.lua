@@ -166,6 +166,11 @@ function M:_update(opts)
 end
 
 function M:layout()
+  -- HACK: don't layout when the command-line window is active
+  if vim.fn.bufexists("[Command Line]") == 1 then
+    return
+  end
+
   if self.stop then
     return
   end
