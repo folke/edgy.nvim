@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.8.3](https://github.com/folke/edgy.nvim/compare/v1.8.2...v1.8.3) (2024-01-21)
+
+
+### Bug Fixes
+
+* disable nvim_eval_statusline since the window keeps resizing ([48c9928](https://github.com/folke/edgy.nvim/commit/48c9928a04b16dcbceb5d03ac6264b45a1e35bde))
+* **layout:** dont layout when the command-line window is open. Fixes [#58](https://github.com/folke/edgy.nvim/issues/58) ([d73e42b](https://github.com/folke/edgy.nvim/commit/d73e42bcee5d28d816bd8bceb189ed7d15ff29ca))
+* revert [#47](https://github.com/folke/edgy.nvim/issues/47) for now ([c9730c0](https://github.com/folke/edgy.nvim/commit/c9730c08a9b56577b5663c8ddfd59ac689004aee))
+* **window:** dont pass window to winbar and click handler. Fixes [#55](https://github.com/folke/edgy.nvim/issues/55) ([2a5133c](https://github.com/folke/edgy.nvim/commit/2a5133ceee7861e586892fd96640c7fa564c620a))
+
 ## [1.8.2](https://github.com/folke/edgy.nvim/compare/v1.8.1...v1.8.2) (2023-10-13)
 
 
