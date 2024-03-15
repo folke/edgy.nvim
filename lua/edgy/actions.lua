@@ -15,7 +15,10 @@ function M.setup(win)
       -- dont override existing mappings
       if ret.buffer ~= 1 then
         vim.keymap.set("n", key, function()
-          action(require("edgy.editor").get_win())
+          local current_win = require("edgy.editor").get_win()
+          if current_win ~= nil then
+            action(current_win)
+          end
         end, { buffer = buf, silent = true })
       end
     end
