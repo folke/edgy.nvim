@@ -20,7 +20,7 @@ local defaults = {
   -- edgebar animations
   animate = {
     enabled = true,
-    fps = 100, -- frames per second
+    fps = 30, -- frames per second
     cps = 120, -- cells per second
     on_begin = function()
       vim.g.minianimate_disable = true
