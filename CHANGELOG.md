@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.4](https://github.com/folke/edgy.nvim/compare/v1.8.3...v1.8.4) (2024-03-26)
+
+
+### Performance Improvements
+
+* set default fps to 30 instead of 100 ([439112f](https://github.com/folke/edgy.nvim/commit/439112f3f1da7ba6dc0c1aa2f111c014cfee817f))
+
 ## [1.8.3](https://github.com/folke/edgy.nvim/compare/v1.8.2...v1.8.3) (2024-01-21)
 
 
