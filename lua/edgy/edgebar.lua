@@ -188,26 +188,28 @@ function M:layout()
   ---@type number?
   local last
   for _, w in ipairs(self.wins) do
-    -- move first window to the edgebar position
-    -- and make floating windows normal windows
-    if not last or vim.api.nvim_win_get_config(w.win).relative ~= "" then
-      vim.api.nvim_win_call(w.win, function()
-        vim.cmd("wincmd " .. wincmds[self.pos])
-      end)
-    end
-    -- move other windows to the end of the edgebar
-    if last then
-      local ok, err = pcall(
-        vim.fn.win_splitmove,
-        w.win,
-        last,
-        { vertical = not self.vertical, rightbelow = true }
-      )
-      if not ok then
-        error("Edgy: Failed to layout windows.\n" .. err .. "\n" .. vim.inspect({
-          win = vim.bo[vim.api.nvim_win_get_buf(w.win)].ft,
-          last = vim.bo[vim.api.nvim_win_get_buf(last)].ft,
-        }))
+    if vim.fn.getcmdwintype() == "" then
+      -- move first window to the edgebar position
+      -- and make floating windows normal windows
+      if not last or vim.api.nvim_win_get_config(w.win).relative ~= "" then
+        vim.api.nvim_win_call(w.win, function()
+          vim.cmd("wincmd " .. wincmds[self.pos])
+        end)
+      end
+      -- move other windows to the end of the edgebar
+      if last then
+        local ok, err = pcall(
+          vim.fn.win_splitmove,
+          w.win,
+          last,
+          { vertical = not self.vertical, rightbelow = true }
+        )
+        if not ok then
+          error("Edgy: Failed to layout windows.\n" .. err .. "\n" .. vim.inspect({
+            win = vim.bo[vim.api.nvim_win_get_buf(w.win)].ft,
+            last = vim.bo[vim.api.nvim_win_get_buf(last)].ft,
+          }))
+        end
       end
     end
     last = w.win
