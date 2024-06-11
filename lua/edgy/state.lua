@@ -8,6 +8,7 @@ local M = {}
 M.state = {}
 M.layout = nil
 M.tracking = true
+M.cursors = {}
 
 function M.setup()
   M.layout = M.layout_wins()
@@ -43,21 +44,22 @@ end
 -- update view state for a window or the current window
 ---@param opts? {win?: number, event?: string}
 function M.update(opts)
-  if M.restoring then
-    return
-  end
   opts = opts or {}
   local win = (opts.win and opts.win > 0) and opts.win or vim.api.nvim_get_current_win()
   if not vim.api.nvim_win_is_valid(win) then
     return
   end
+  ---@type boolean, WinView
   local ok, state = pcall(vim.api.nvim_win_call, win, vim.fn.winsaveview)
   if ok then
     if opts.event == "CursorMoved" then
       local cursor = vim.api.nvim_win_get_cursor(win)
+      if vim.deep_equal(M.cursors[win], cursor) then
+        return
+      end
       state = M.state[win] or state
-      state.lnum = cursor[1]
       state.col = cursor[2]
+      state.lnum = cursor[1]
     end
     M.state[win] = state
   end
@@ -129,6 +131,7 @@ function M.restore()
         pcall(vim.api.nvim_win_call, win, function()
           vim.fn.winrestview(s)
         end)
+        M.cursors[win] = vim.api.nvim_win_get_cursor(win)
       end
     else
       M.state[win] = nil
