@@ -3,7 +3,8 @@ local Util = require("edgy.util")
 
 local M = {}
 
----@type any[]
+---@alias WinView {topline:number, lnum:number, col:number}
+---@type WinView[]
 M.state = {}
 M.layout = nil
 M.tracking = true
@@ -13,7 +14,14 @@ function M.setup()
   M.save()
 
   -- always update view state when the cursor moves
-  vim.api.nvim_create_autocmd("CursorMoved", { callback = M.update })
+  vim.api.nvim_create_autocmd("CursorMoved", {
+    callback = function(ev)
+      local win = vim.fn.bufwinid(ev.buf)
+      if win ~= -1 then
+        M.update({ win = win, event = "CursorMoved" })
+      end
+    end,
+  })
 
   -- update view state when layout didn't change
   -- This is needed to properly deal with new windows entering the layout.
@@ -24,7 +32,7 @@ function M.setup()
       if M.is_enabled() then
         for win, info in pairs(vim.v.event) do
           if win ~= "all" and (info.topline > 0 or info.height > 0 or info.width > 0) then
-            M.update(tonumber(win))
+            M.update({ win = tonumber(win), event = "WinScrolled" })
           end
         end
       end
@@ -33,12 +41,24 @@ function M.setup()
 end
 
 -- update view state for a window or the current window
----@param win? window
----@param redraw? boolean
-function M.update(win)
-  win = win or vim.api.nvim_get_current_win()
+---@param opts? {win?: number, event?: string}
+function M.update(opts)
+  if M.restoring then
+    return
+  end
+  opts = opts or {}
+  local win = (opts.win and opts.win > 0) and opts.win or vim.api.nvim_get_current_win()
+  if not vim.api.nvim_win_is_valid(win) then
+    return
+  end
   local ok, state = pcall(vim.api.nvim_win_call, win, vim.fn.winsaveview)
   if ok then
+    if opts.event == "CursorMoved" then
+      local cursor = vim.api.nvim_win_get_cursor(win)
+      state = M.state[win] or state
+      state.lnum = cursor[1]
+      state.col = cursor[2]
+    end
     M.state[win] = state
   end
 end
@@ -67,7 +87,7 @@ end
 -- get all windows in the current layout
 function M.layout_wins()
   local queue = { vim.fn.winlayout() }
-  ---@type table<window, window>
+  ---@type table<number, number>
   local wins = {}
   while #queue > 0 do
     local node = table.remove(queue)
@@ -92,7 +112,9 @@ function M.save()
 
   local wins = M.layout_wins()
   for _, win in pairs(wins) do
-    M.state[win] = M.state[win] or vim.api.nvim_win_call(win, vim.fn.winsaveview)
+    if not M.state[win] then
+      M.update({ win = win })
+    end
   end
 end
 
