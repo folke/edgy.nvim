@@ -1,4 +1,4 @@
-*edgy.nvim.txt*         For Neovim >= 0.8.0         Last change: 2024 March 26
+*edgy.nvim.txt*          For Neovim >= 0.8.0         Last change: 2024 June 11
 
 ==============================================================================
 Table of Contents                                *edgy.nvim-table-of-contents*
@@ -11,6 +11,7 @@ Table of Contents                                *edgy.nvim-table-of-contents*
   - Usage                                          |edgy.nvim-edgy.nvim-usage|
   - Example Setup                          |edgy.nvim-edgy.nvim-example-setup|
   - Tips & tricks                          |edgy.nvim-edgy.nvim-tips-&-tricks|
+2. Links                                                     |edgy.nvim-links|
 
 ==============================================================================
 1. edgy.nvim                                             *edgy.nvim-edgy.nvim*
