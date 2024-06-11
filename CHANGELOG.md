@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.9.0](https://github.com/folke/edgy.nvim/compare/v1.8.4...v1.9.0) (2024-06-11)
+
+
+### Features
+
+* **actions:** add null check for current window in setup function ([#69](https://github.com/folke/edgy.nvim/issues/69)) ([9a17567](https://github.com/folke/edgy.nvim/commit/9a17567769fddb655db0c5043cfd942f30fc8814))
+
+
+### Bug Fixes
+
+* more animate fixes ([ceb51f9](https://github.com/folke/edgy.nvim/commit/ceb51f91c70430819fbbb13017424b34bbcba8ba))
+* properly deal with CursorMoved when animating ([b297423](https://github.com/folke/edgy.nvim/commit/b297423ae7ef78942d482ce1fa7cf34b495c0598))
+
 ## [1.8.4](https://github.com/folke/edgy.nvim/compare/v1.8.3...v1.8.4) (2024-03-26)
 
 
