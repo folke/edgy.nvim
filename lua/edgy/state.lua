@@ -8,7 +8,6 @@ local M = {}
 M.state = {}
 M.layout = nil
 M.tracking = true
-M.cursors = {}
 
 function M.setup()
   M.layout = M.layout_wins()
@@ -17,6 +16,9 @@ function M.setup()
   -- always update view state when the cursor moves
   vim.api.nvim_create_autocmd("CursorMoved", {
     callback = function(ev)
+      if not M.is_enabled() then
+        return
+      end
       local win = vim.fn.bufwinid(ev.buf)
       if win ~= -1 then
         M.update({ win = win, event = "CursorMoved" })
@@ -52,15 +54,6 @@ function M.update(opts)
   ---@type boolean, WinView
   local ok, state = pcall(vim.api.nvim_win_call, win, vim.fn.winsaveview)
   if ok then
-    if opts.event == "CursorMoved" then
-      local cursor = vim.api.nvim_win_get_cursor(win)
-      if vim.deep_equal(M.cursors[win], cursor) then
-        return
-      end
-      state = M.state[win] or state
-      state.col = cursor[2]
-      state.lnum = cursor[1]
-    end
     M.state[win] = state
   end
 end
@@ -131,7 +124,6 @@ function M.restore()
         pcall(vim.api.nvim_win_call, win, function()
           vim.fn.winrestview(s)
         end)
-        M.cursors[win] = vim.api.nvim_win_get_cursor(win)
       end
     else
       M.state[win] = nil

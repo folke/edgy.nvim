@@ -83,7 +83,7 @@ function M.needs_layout()
   return false
 end
 
----@param wins window[]
+---@param wins number[]
 function M.debug(wins)
   return vim.tbl_map(function(w)
     local buf = vim.api.nvim_win_get_buf(w)
@@ -140,15 +140,16 @@ function M.layout(opts)
   end
 
   if opts.full and needs_layout then
-    State.save()
     Util.debug("full layout")
+    State.save()
     M.foreach({ "bottom", "top", "left", "right" }, function(edgebar)
       edgebar:layout()
     end)
-    -- State.restore()
+    require("edgy.animate").stop()
   end
 
   local updated = false
+
   M.foreach({ "left", "right", "bottom", "top" }, function(edgebar)
     if edgebar:resize() then
       if not updated then
@@ -162,13 +163,16 @@ function M.layout(opts)
       end
     end
   end)
+  if require("edgy.animate").is_active() then
+    return true
+  end
 
   if updated then
+    State.restore()
     if Config.animate.enabled then
       require("edgy.animate").update()
     else
       Util.debug("resize")
-      State.restore()
     end
   end
 

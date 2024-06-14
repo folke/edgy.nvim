@@ -165,6 +165,8 @@ function M:update(wins)
   -- check if the layout changed
   for _, view in ipairs(self.views) do
     if not vim.deep_equal(current[view], view.wins) then
+      -- dd(view.title, vim.tbl_map(tostring, view.wins), vim.tbl_map(tostring, current[view]))
+      -- vim.notify(before .. "\n---\n" .. tostring(self))
       return true
     end
   end
