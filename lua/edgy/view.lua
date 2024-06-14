@@ -4,7 +4,7 @@ local Util = require("edgy.util")
 
 ---@class Edgy.View.Opts
 ---@field ft string
----@field filter? fun(buf:buffer, win:window):boolean?
+---@field filter? fun(buf:number, win:number):boolean?
 ---@field title? string
 ---@field size? Edgy.Size
 -- When a view is pinned, it will always be shown
@@ -35,15 +35,21 @@ function M.new(opts, edgebar)
   return self
 end
 
----@param wins window[]
----@return boolean updated Whether the view was updated
+function M:__tostring()
+  local lines = { "Edgy.View(" .. self.title .. ")" }
+  for _, win in ipairs(self.wins) do
+    table.insert(lines, "  " .. tostring(win))
+  end
+  return table.concat(lines, "\n")
+end
+
+---@param wins number[]
 function M:update(wins)
-  ---@type table<window, Edgy.Window>
+  ---@type table<number, Edgy.Window>
   local index = {}
   for _, w in ipairs(self.wins) do
     index[w.win] = w
   end
-  local old = self.wins
   self.wins = {}
   for _, win in ipairs(wins) do
     local buf = vim.api.nvim_win_get_buf(win)
@@ -54,15 +60,16 @@ function M:update(wins)
   if #self.wins > 0 then
     self.opening = false
   end
-  return not vim.deep_equal(old, self.wins)
 end
 
 ---@param opts? {check: boolean}
 function M:layout(opts)
-  if #self.wins == 1 and self.wins[1] == self.pinned_win then
+  local is_pinned = #self.wins == 1 and self.wins[1] == self.pinned_win
+
+  if is_pinned then
     self.wins = {}
   end
-  if self.edgebar.visible > 0 and self.pinned and #self.wins == 0 then
+  if self.edgebar.visible > 0 and self.pinned and (#self.wins == 0) then
     self:show_pinned(opts)
   else
     self:hide_pinned(opts)

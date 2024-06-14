@@ -130,15 +130,26 @@ function M:on_hide(win)
   real[1]:show()
 end
 
+function M.__tostring(self)
+  local lines = { "Edgy.Edgebar(" .. self.pos .. ")" }
+  for _, view in ipairs(self.views) do
+    for _, l in ipairs(vim.split(tostring(view), "\n")) do
+      table.insert(lines, "  " .. l)
+    end
+  end
+  return table.concat(lines, "\n")
+end
+
 ---@param wins table<string, number[]>
 ---@return boolean updated if the edgebar was updated
 function M:update(wins)
+  local before = tostring(self)
+
   self.visible = 0
-  local updated = false
+  local current = {} ---@type table<Edgy.View, Edgy.Window[]>
   for _, view in ipairs(self.views) do
-    if view:update(wins[view.ft] or {}) then
-      updated = true
-    end
+    current[view] = view.wins
+    view:update(wins[view.ft] or {})
     self.visible = self.visible + #view.wins
     wins[view.ft] = vim.tbl_filter(function(w)
       for _, win in ipairs(view.wins) do
@@ -150,7 +161,14 @@ function M:update(wins)
     end, wins[view.ft] or {})
   end
   self:_update({ check = true })
-  return updated
+
+  -- check if the layout changed
+  for _, view in ipairs(self.views) do
+    if not vim.deep_equal(current[view], view.wins) then
+      return true
+    end
+  end
+  return false
 end
 
 ---@param opts? {check: boolean}

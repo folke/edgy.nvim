@@ -3,17 +3,17 @@ local Config = require("edgy.config")
 ---@class Edgy.Window
 ---@field visible boolean
 ---@field view Edgy.View
----@field win window
+---@field win number
 ---@field width? number
 ---@field height? number
 ---@field idx integer
 local M = {}
 M.__index = M
 
----@type table<window, Edgy.Window>
+---@type table<number, Edgy.Window>
 M.cache = setmetatable({}, { __mode = "v" })
 
----@param win window
+---@param win number
 ---@param view Edgy.View
 function M.new(win, view)
   local self = setmetatable({}, M)
@@ -57,6 +57,10 @@ function M.new(win, view)
   })
   require("edgy.actions").setup(self)
   return self
+end
+
+function M:__tostring()
+  return "Edgy.Window(" .. (self:is_pinned() and "pinned:" or "") .. self.win .. ")"
 end
 
 ---@param dim "width" | "height"
