@@ -1,5 +1,7 @@
 local M = {}
 
+local uv = vim.uv or vim.loop
+
 ---@param opts? {finally:fun()}
 function M.try(fn, opts)
   opts = opts or {}
@@ -79,7 +81,7 @@ end
 --- @return F
 function M.throttle(fn, ms)
   ms = ms or 200
-  local timer = assert(vim.loop.new_timer())
+  local timer = assert(uv.new_timer())
   local waiting = 0
   return function()
     if timer:is_active() then
@@ -102,7 +104,7 @@ end
 --- @return F
 function M.debounce(fn, ms)
   ms = ms or 50
-  local timer = assert(vim.loop.new_timer())
+  local timer = assert(uv.new_timer())
   local waiting = 0
   return function()
     if timer:is_active() then

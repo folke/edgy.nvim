@@ -24,11 +24,11 @@ function M.setup()
   })
 
   for _, win in ipairs(vim.api.nvim_list_wins()) do
-    vim.w[win].edgy_enter = vim.w[win].edgy_enter or vim.loop.hrtime()
+    vim.w[win].edgy_enter = vim.w[win].edgy_enter or uv.hrtime()
   end
 
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    vim.b[buf].edgy_enter = vim.b[buf].edgy_enter or vim.loop.hrtime()
+    vim.b[buf].edgy_enter = vim.b[buf].edgy_enter or uv.hrtime()
   end
 end
 

@@ -185,7 +185,7 @@ function M:winbar()
   local icon = self.visible and Config.icons.open or Config.icons.closed
   if self.view.opening then
     local spinner = Config.animate.spinner
-    local ms = vim.loop.hrtime() / 1000000
+    local ms = (vim.uv or vim.loop).hrtime() / 1000000
     local frame = math.floor(ms / spinner.interval) % #spinner.frames
     icon = spinner.frames[frame + 1]
   end
