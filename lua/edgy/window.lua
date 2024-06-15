@@ -7,6 +7,7 @@ local Config = require("edgy.config")
 ---@field width? number
 ---@field height? number
 ---@field idx integer
+---@field wo vim.wo
 local M = {}
 M.__index = M
 
@@ -25,6 +26,7 @@ function M.new(win, view)
 
   ---@type vim.wo
   local wo = vim.tbl_deep_extend("force", {}, Config.wo, view.edgebar.wo or {}, view.wo or {})
+  self.wo = wo
 
   if wo.winbar == true then
     if vim.api.nvim_win_get_height(win) == 1 then
@@ -35,28 +37,63 @@ function M.new(win, view)
     wo.winbar = nil
   end
   for k, v in pairs(wo) do
-    -- special treatment for winhighlight
-    -- add to existing winhighlight
-    if k == "winhighlight" then
-      local whl = vim.split(vim.wo[self.win].winhighlight, ",")
-      vim.list_extend(whl, vim.split(v, ","))
-      whl = vim.tbl_filter(function(hl)
-        return hl ~= ""
-      end, whl)
-      v = table.concat(whl, ",")
+    if k ~= "winhighlight" then
+      vim.api.nvim_set_option_value(k, v, { scope = "local", win = win })
     end
-    vim.api.nvim_set_option_value(k, v, { scope = "local", win = win })
   end
-  vim.api.nvim_create_autocmd("WinClosed", {
-    callback = function(event)
-      if tonumber(event.match) == self.win then
-        self.view.edgebar:on_hide(self)
+  -- special treatment for winhighlight
+  -- add to existing winhighlight
+  self:fix_winhl()
+  local group = vim.api.nvim_create_augroup("edgy_window_" .. win, { clear = true })
+  vim.api.nvim_create_autocmd("WinEnter", {
+    group = group,
+    callback = function(ev)
+      if not vim.api.nvim_win_is_valid(self.win) then
         return true
       end
+      self:fix_winhl()
+      if ev.buf == vim.api.nvim_win_get_buf(self.win) then
+        vim.schedule(function()
+          self:fix_winhl()
+        end)
+      end
+    end,
+  })
+  vim.api.nvim_create_autocmd("WinClosed", {
+    group = group,
+    pattern = tostring(self.win),
+    callback = function()
+      self.view.edgebar:on_hide(self)
+      vim.api.nvim_del_augroup_by_id(group)
+      return true
     end,
   })
   require("edgy.actions").setup(self)
   return self
+end
+
+function M:fix_winhl()
+  if not vim.api.nvim_win_is_valid(self.win) then
+    return
+  end
+  local v = self.wo.winhighlight
+  -- special treatment for winhighlight
+  -- add to existing winhighlight
+  local whl = vim.split(vim.wo[self.win].winhighlight, ",")
+  vim.list_extend(whl, vim.split(v, ","))
+  local have = { [""] = true }
+  whl = vim.tbl_filter(function(hl)
+    if have[hl] then
+      return false
+    end
+    have[hl] = true
+    return true
+  end, whl)
+  local newv = table.concat(whl, ",")
+  if newv == v then
+    return
+  end
+  vim.api.nvim_set_option_value("winhighlight", newv, { scope = "local", win = self.win })
 end
 
 function M:__tostring()

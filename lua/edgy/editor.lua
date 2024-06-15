@@ -2,20 +2,23 @@ local Config = require("edgy.config")
 
 local M = {}
 
+local uv = vim.uv or vim.loop
+
 function M.setup()
+  local group = vim.api.nvim_create_augroup("edgy_track", { clear = true })
   vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
-    group = vim.api.nvim_create_augroup("edgy_track", { clear = true }),
+    group = group,
     callback = function(event)
       if event.event == "BufEnter" then
-        vim.b.edgy_enter = vim.loop.hrtime()
+        vim.b.edgy_enter = uv.hrtime()
       else
-        vim.w.edgy_enter = vim.loop.hrtime()
+        vim.w.edgy_enter = uv.hrtime()
       end
     end,
   })
 
   vim.api.nvim_create_autocmd("WinClosed", {
-    group = vim.api.nvim_create_augroup("edgy_track_closed", { clear = true }),
+    group = group,
     nested = true,
     callback = M.check_main,
   })

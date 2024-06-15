@@ -13,8 +13,11 @@ function M.setup()
   M.layout = M.layout_wins()
   M.save()
 
+  local group = vim.api.nvim_create_augroup("edgy_state", { clear = true })
+
   -- always update view state when the cursor moves
   vim.api.nvim_create_autocmd("CursorMoved", {
+    group = group,
     callback = function(ev)
       if not M.is_enabled() then
         return
@@ -31,6 +34,7 @@ function M.setup()
   -- New windows mess up the view state, so we don't track changes after a new
   -- window is created until the next restore.
   vim.api.nvim_create_autocmd("WinScrolled", {
+    group = group,
     callback = function()
       if M.is_enabled() then
         for win, info in pairs(vim.v.event) do

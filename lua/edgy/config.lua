@@ -50,7 +50,7 @@ local defaults = {
     winbar = true,
     winfixwidth = true,
     winfixheight = false,
-    winhighlight = "WinBar:EdgyWinBar,Normal:EdgyNormal",
+    winhighlight = "WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal",
     spell = false,
     signcolumn = "no",
   },
@@ -147,18 +147,20 @@ function M.setup(opts)
   vim.api.nvim_set_hl(0, "EdgyIcon", { default = true, link = "SignColumn" })
   vim.api.nvim_set_hl(0, "EdgyIconActive", { default = true, link = "Constant" })
   vim.api.nvim_set_hl(0, "EdgyTitle", { default = true, link = "Title" })
-  vim.api.nvim_set_hl(0, "EdgyWinBar", { default = true, link = "Winbar" })
+  vim.api.nvim_set_hl(0, "EdgyWinBar", { default = true, link = "Title" })
+  vim.api.nvim_set_hl(0, "EdgyWinBarNC", { default = true, link = "EdgyWinBar" })
   vim.api.nvim_set_hl(0, "EdgyNormal", { default = true, link = "NormalFloat" })
 
   require("edgy.editor").setup()
   require("edgy.state").setup()
 
-  local group = vim.api.nvim_create_augroup("layout", { clear = true })
+  local group = vim.api.nvim_create_augroup("edgy_layout", { clear = true })
   vim.api.nvim_create_autocmd({ "BufWinEnter", "WinResized" }, {
     group = group,
     callback = Layout.update,
   })
   vim.api.nvim_create_autocmd({ "FileType", "VimResized" }, {
+    group = group,
     callback = function()
       vim.schedule(Layout.update)
     end,
