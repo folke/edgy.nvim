@@ -76,11 +76,11 @@ function M:fix_winhl()
   if not vim.api.nvim_win_is_valid(self.win) then
     return
   end
-  local v = self.wo.winhighlight
+  local current = vim.wo[self.win].winhighlight
   -- special treatment for winhighlight
   -- add to existing winhighlight
-  local whl = vim.split(vim.wo[self.win].winhighlight, ",")
-  vim.list_extend(whl, vim.split(v, ","))
+  local whl = vim.split(current, ",")
+  vim.list_extend(whl, vim.split(self.wo.winhighlight, ","))
   local have = { [""] = true }
   whl = vim.tbl_filter(function(hl)
     if have[hl] then
@@ -90,7 +90,7 @@ function M:fix_winhl()
     return true
   end, whl)
   local newv = table.concat(whl, ",")
-  if newv == v then
+  if newv == current then
     return
   end
   vim.api.nvim_set_option_value("winhighlight", newv, { scope = "local", win = self.win })
