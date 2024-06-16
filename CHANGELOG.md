@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.9.1](https://github.com/folke/edgy.nvim/compare/v1.9.0...v1.9.1) (2024-06-16)
+
+
+### Bug Fixes
+
+* **animate:** set scrolloff=0 to keep proper cursor positions ([7a9d0a3](https://github.com/folke/edgy.nvim/commit/7a9d0a35cf5b2dadf8037aa534aac4b7836dbb49))
+* dont layout when cmdwin is active. Fixes [#78](https://github.com/folke/edgy.nvim/issues/78) ([1afa13e](https://github.com/folke/edgy.nvim/commit/1afa13e4073f9bf0e30436c99def2ab800c30ca0))
+* restore topline/lnum when needed ([c6a624c](https://github.com/folke/edgy.nvim/commit/c6a624c5715cd897a0bc894281d00a56f36a48c7))
+* **window:** fix winhl when reset by the other window ([c40a55e](https://github.com/folke/edgy.nvim/commit/c40a55ed99bf6b836fc0de079ad71de13e558008))
+* **window:** winhl was not always applied ([1f4e1ef](https://github.com/folke/edgy.nvim/commit/1f4e1efac0c43d052322c2c6147c9fc3175985f0))
+
+
+### Performance Improvements
+
+* calculate layout in one run and make sure it's idempotent ([7ab14cd](https://github.com/folke/edgy.nvim/commit/7ab14cd23b519e33878ba543691e688924bf55fb))
+
 ## [1.9.0](https://github.com/folke/edgy.nvim/compare/v1.8.4...v1.9.0) (2024-06-11)
 
 
