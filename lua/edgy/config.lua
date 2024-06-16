@@ -53,6 +53,7 @@ local defaults = {
     winhighlight = "WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal",
     spell = false,
     signcolumn = "no",
+    scrolloff = 0,
   },
   -- buffer-local keymaps to be added to edgebar buffers.
   -- Existing buffer-local keymaps will never be overridden.
