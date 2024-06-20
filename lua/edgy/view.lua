@@ -10,6 +10,9 @@ local Util = require("edgy.util")
 -- When a view is pinned, it will always be shown
 -- in the edgebar, even if it has no windows.
 ---@field pinned? boolean
+---When a view is pinned and collapsed, it will be
+---shown closed on start.
+---@field collapsed? boolean
 -- Open function or command to open a pinned view
 ---@field open? fun()|string
 ---@field wo? vim.wo View specific window options
