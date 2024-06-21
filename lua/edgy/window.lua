@@ -191,7 +191,7 @@ function M:winbar()
   end
 
   parts[#parts + 1] = "%#" .. icon_hl .. "#" .. icon .. "%*%<"
-  parts[#parts + 1] = "%#EdgyTitle# " .. self.view.title .. "%*"
+  parts[#parts + 1] = "%#EdgyTitle# " .. self.view.get_title() .. "%*"
   parts[#parts + 1] = "%T"
 
   return table.concat(parts)
