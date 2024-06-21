@@ -18,7 +18,7 @@ M.cache = setmetatable({}, { __mode = "v" })
 ---@param view Edgy.View
 function M.new(win, view)
   local self = setmetatable({}, M)
-  self.visible = true
+  self.visible = not view.collapsed
   self.view = view
   self.idx = 1
   self.win = win
@@ -111,7 +111,7 @@ end
 
 ---@param visibility? boolean
 function M:show(visibility)
-  self.visible = visibility == nil and true or visibility or false
+  self.visible = (visibility == nil and not self.view.collapsed) or visibility or false
   if self.visible and self:is_pinned() then
     -- self.visible = false
     return self.view:open_pinned()
