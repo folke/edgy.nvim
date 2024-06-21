@@ -127,7 +127,7 @@ function M.select(pos, filter)
       prompt = "Select Edgy Window:",
       ---@param w Edgy.Window
       format_item = function(w)
-        local title = w.view.title
+        local title = w.view.get_title()
         if pos == nil then
           title = "[" .. w.view.edgebar.pos .. "] " .. title
         end
