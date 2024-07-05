@@ -1,6 +1,6 @@
-local Util = require("edgy.util")
 local Config = require("edgy.config")
 local State = require("edgy.state")
+local Util = require("edgy.util")
 
 local M = {}
 
@@ -46,9 +46,7 @@ end
 function M.check_size(pos, wins)
   local size = nil ---@type number?
   for _, win in ipairs(wins) do
-    local s = pos == "left"
-      or pos == "right" and vim.api.nvim_win_get_width(win)
-      or vim.api.nvim_win_get_height(win)
+    local s = pos == "left" or pos == "right" and vim.api.nvim_win_get_width(win) or vim.api.nvim_win_get_height(win)
     size = size == nil and s or size
     if size ~= s then
       return false

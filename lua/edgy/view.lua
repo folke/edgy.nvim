@@ -1,6 +1,6 @@
-local Window = require("edgy.window")
 local Editor = require("edgy.editor")
 local Util = require("edgy.util")
+local Window = require("edgy.window")
 
 ---@class Edgy.View.Opts
 ---@field ft string

@@ -1,8 +1,8 @@
 --- vim.uv
 
+local Config = require("edgy.config")
 local Layout = require("edgy.layout")
 local Util = require("edgy.util")
-local Config = require("edgy.config")
 
 local uv = vim.uv or vim.loop
 
@@ -28,13 +28,11 @@ function M.get_state(win)
       width = vim.api.nvim_win_get_width(win.win),
       height = vim.api.nvim_win_get_height(win.win),
     }
-    local hidden_size = edgebar.vertical and (vim.o.laststatus == 1 or vim.o.laststatus == 2) and 2
-      or 1
+    local hidden_size = edgebar.vertical and (vim.o.laststatus == 1 or vim.o.laststatus == 2) and 2 or 1
     ---@diagnostic disable-next-line: missing-fields
     M.state[win] = {
       [long] = #edgebar.wins == 1 and bounds[long] or hidden_size,
-      [short] = #edgebar.wins == 1 and 1
-        or (type(edgebar.size) == "function" and edgebar.size() or edgebar.size),
+      [short] = #edgebar.wins == 1 and 1 or (type(edgebar.size) == "function" and edgebar.size() or edgebar.size),
       view = vim.api.nvim_win_call(win.win, vim.fn.winsaveview),
     }
     for _, w in ipairs(edgebar.wins) do
