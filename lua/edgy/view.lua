@@ -124,7 +124,10 @@ function M:hide_pinned(opts)
   end
 end
 
-function M:open_pinned()
+---@param opts? {on_open: fun()}
+function M:open_pinned(opts)
+  opts = opts or {}
+
   self.opening = true
   vim.schedule(function()
     Editor:goto_main()
@@ -136,6 +139,10 @@ function M:open_pinned()
       end)
     else
       Util.error("View is pinned and has no open function")
+    end
+
+    if opts.on_open then
+      opts.on_open()
     end
   end)
 end

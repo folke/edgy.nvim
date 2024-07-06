@@ -4,6 +4,13 @@ local M = {}
 
 local uv = vim.uv or vim.loop
 
+---@class Edgy.OpenOpts
+local open_opts_defaults = {
+  pos = nil, ---@type Edgy.Pos
+  focus = true, ---@type boolean
+  on_open = nil, ---@type fun()
+}
+
 function M.setup()
   local group = vim.api.nvim_create_augroup("edgy_track", { clear = true })
   vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
@@ -183,12 +190,35 @@ function M.close(pos)
   end
 end
 
----@param pos? Edgy.Pos
-function M.open(pos)
-  for p, edgebar in pairs(Config.layout) do
-    if p == pos or pos == nil then
-      edgebar:open()
+---@param opts? Edgy.OpenOpts
+function M.open(opts)
+  opts = vim.tbl_deep_extend("force", {}, open_opts_defaults, opts or {})
+
+  local current_window = vim.api.nvim_get_current_win()
+  local edgebar_count = 0
+  local wait_for_edgebar = false
+
+  local on_open = function()
+    edgebar_count = edgebar_count - 1
+    if edgebar_count == 0 and not opts.focus then
+      vim.api.nvim_set_current_win(current_window)
     end
+
+    if opts.on_open then
+      opts.on_open()
+    end
+  end
+
+  for p, edgebar in pairs(Config.layout) do
+    if p == opts.pos or opts.pos == nil then
+      edgebar_count = edgebar_count + 1
+      wait_for_edgebar = true
+      edgebar:open({ on_open = on_open })
+    end
+  end
+
+  if not wait_for_edgebar then
+    on_open()
   end
 end
 
@@ -201,20 +231,22 @@ function M.equalize(pos)
   end
 end
 
----@param pos? Edgy.Pos
-function M.toggle(pos)
+---@param opts? Edgy.OpenOpts
+function M.toggle(opts)
+  opts = vim.tbl_deep_extend("force", {}, open_opts_defaults, opts or {})
+
   local has_open = false
   for p, edgebar in pairs(Config.layout) do
-    if p == pos or pos == nil then
+    if p == opts.pos or opts.pos == nil then
       if #edgebar.wins > 0 then
         has_open = true
       end
     end
   end
   if has_open then
-    M.close(pos)
+    M.close(opts.pos)
   else
-    M.open(pos)
+    M.open(opts)
   end
 end
 

@@ -308,11 +308,26 @@ function M:resize()
   end
 end
 
-function M:open()
+---@param opts? {on_open: fun()}
+function M:open(opts)
+  local view_count = 0
+  local wait_for_views = false
+
   for _, view in ipairs(self.views) do
     if view.pinned and (#view.wins == 0 or view.wins[1]:is_pinned()) then
-      view:open_pinned()
+      view_count = view_count + 1
+      wait_for_views = true
+      view:open_pinned({on_open = function()
+        view_count = view_count - 1
+        if view_count == 0 and opts and opts.on_open then
+          opts.on_open()
+        end
+      end})
     end
+  end
+
+  if not wait_for_views and opts and opts.on_open then
+    opts.on_open()
   end
 end
 
