@@ -12,4 +12,3 @@ jobs:
     with:
       plugin: edgy.nvim
       repo: folke/edgy.nvim
-      tests: false
