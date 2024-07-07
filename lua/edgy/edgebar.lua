@@ -1,6 +1,6 @@
-local View = require("edgy.view")
-local Util = require("edgy.util")
 local Editor = require("edgy.editor")
+local Util = require("edgy.util")
+local View = require("edgy.view")
 
 ---@class Edgy.Edgebar.Opts
 ---@field views (Edgy.View.Opts|string)[]
@@ -209,12 +209,7 @@ function M:layout()
     end
     -- move other windows to the end of the edgebar
     if last then
-      local ok, err = pcall(
-        vim.fn.win_splitmove,
-        w.win,
-        last,
-        { vertical = not self.vertical, rightbelow = true }
-      )
+      local ok, err = pcall(vim.fn.win_splitmove, w.win, last, { vertical = not self.vertical, rightbelow = true })
       if not ok then
         error("Edgy: Failed to layout windows.\n" .. err .. "\n" .. vim.inspect({
           win = vim.bo[vim.api.nvim_win_get_buf(w.win)].ft,
@@ -250,8 +245,7 @@ function M:resize()
       local size = M.size(win:dim(short) or 0, self.vertical and vim.o.columns or vim.o.lines)
       self.bounds[short] = math.max(self.bounds[short], size)
     end
-    local size = self.vertical and vim.api.nvim_win_get_height(win.win)
-      or vim.api.nvim_win_get_width(win.win)
+    local size = self.vertical and vim.api.nvim_win_get_height(win.win) or vim.api.nvim_win_get_width(win.win)
     self.bounds[long] = self.bounds[long] + size
   end
 

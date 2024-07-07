@@ -198,8 +198,7 @@ function M:winbar()
 end
 
 function M:needs_resize()
-  return self.width ~= vim.api.nvim_win_get_width(self.win)
-    or self.height ~= vim.api.nvim_win_get_height(self.win)
+  return self.width ~= vim.api.nvim_win_get_width(self.win) or self.height ~= vim.api.nvim_win_get_height(self.win)
 end
 
 -- Resize the given dimension by the given amount

@@ -136,8 +136,7 @@ function M.setup(opts)
   for _, pos in ipairs({ "bottom", "top", "right", "left" }) do
     local views = options[pos] or {}
     if #views > 0 then
-      M.layout[pos] =
-        Edgebar.new(pos, vim.tbl_deep_extend("force", options.options[pos], { views = views }))
+      M.layout[pos] = Edgebar.new(pos, vim.tbl_deep_extend("force", options.options[pos], { views = views }))
     end
   end
 
