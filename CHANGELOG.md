@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.10.0](https://github.com/folke/edgy.nvim/compare/v1.9.1...v1.10.0) (2024-07-07)
+
+
+### Features
+
+* **title:** implement dynamic view title feature ([#90](https://github.com/folke/edgy.nvim/issues/90)) ([cdb740f](https://github.com/folke/edgy.nvim/commit/cdb740f6df97a1d02fb193a1ee1da215c902a004)), closes [#59](https://github.com/folke/edgy.nvim/issues/59)
+* **view:** add collapsed on start option to pinned views ([#89](https://github.com/folke/edgy.nvim/issues/89)) ([2546a8e](https://github.com/folke/edgy.nvim/commit/2546a8e81532a672b31bb585942f67088561a343))
+
 ## [1.9.1](https://github.com/folke/edgy.nvim/compare/v1.9.0...v1.9.1) (2024-06-16)
 
 
