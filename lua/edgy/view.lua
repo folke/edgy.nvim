@@ -5,7 +5,7 @@ local Window = require("edgy.window")
 ---@class Edgy.View.Opts
 ---@field ft string
 ---@field filter? fun(buf:number, win:number):boolean?
----@field title? string
+---@field title? fun():string|string
 ---@field size? Edgy.Size
 -- When a view is pinned, it will always be shown
 -- in the edgebar, even if it has no windows.
@@ -15,7 +15,8 @@ local Window = require("edgy.window")
 ---@field wo? vim.wo View specific window options
 
 ---@class Edgy.View: Edgy.View.Opts
----@field title string
+---@field title fun():string|string
+---@field get_title fun():string
 ---@field wins Edgy.Window[]
 ---@field size Edgy.Size
 ---@field pinned_win? Edgy.Window
@@ -30,13 +31,19 @@ function M.new(opts, edgebar)
   self.edgebar = edgebar
   self.wins = {}
   self.title = self.title or self.ft:sub(1, 1):upper() .. self.ft:sub(2)
+  self.get_title = function()
+    if type(self.title) == "function" then
+      return self.title()
+    end
+    return self.title
+  end
   self.size = self.size or {}
   self.opening = false
   return self
 end
 
 function M:__tostring()
-  local lines = { "Edgy.View(" .. self.title .. ")" }
+  local lines = { "Edgy.View(" .. self.get_title() .. ")" }
   for _, win in ipairs(self.wins) do
     table.insert(lines, "  " .. tostring(win))
   end
@@ -88,7 +95,7 @@ function M:show_pinned(opts)
     vim.bo[buf].bufhidden = "wipe"
     vim.bo[buf].swapfile = false
     vim.bo[buf].filetype = "edgy"
-    vim.api.nvim_buf_set_name(buf, "edgy://" .. self.title)
+    vim.api.nvim_buf_set_name(buf, "edgy://" .. self.get_title())
     local win = vim.api.nvim_open_win(buf, false, {
       relative = "editor",
       width = 1,

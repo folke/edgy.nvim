@@ -157,7 +157,7 @@ function M:update(wins)
   -- check if the layout changed
   for _, view in ipairs(self.views) do
     if not vim.deep_equal(current[view], view.wins) then
-      -- dd(view.title, vim.tbl_map(tostring, view.wins), vim.tbl_map(tostring, current[view]))
+      -- dd(view.get_title(), vim.tbl_map(tostring, view.wins), vim.tbl_map(tostring, current[view]))
       -- vim.notify(before .. "\n---\n" .. tostring(self))
       return true
     end
@@ -274,9 +274,9 @@ function M:resize()
     elseif self.vertical then
       win[long] = 1
     else
-      local title_width = vim.fn.strdisplaywidth(win.view.title)
+      local title_width = vim.fn.strdisplaywidth(win.view.get_title())
       -- if vim.api.nvim_eval_statusline then
-      --   title_width = vim.api.nvim_eval_statusline(win.view.title, {
+      --   title_width = vim.api.nvim_eval_statusline(win.view.get_title(), {
       --     use_winbar = true,
       --     winid = win.win,
       --   }).width
