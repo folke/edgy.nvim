@@ -165,6 +165,9 @@ function M:sibling(dir, opts)
 end
 
 function M:focus()
+  if not self.visible then
+    self:show(true)
+  end
   vim.api.nvim_set_current_win(self.win)
 end
 
