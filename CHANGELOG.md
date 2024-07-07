@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/folke/edgy.nvim/compare/v1.10.0...v1.10.1) (2024-07-07)
+
+
+### Bug Fixes
+
+* **collapsed:** make window visible for focus action ([#98](https://github.com/folke/edgy.nvim/issues/98)) ([e26aedb](https://github.com/folke/edgy.nvim/commit/e26aedb26b976583c2f7294620a5b49727c4135e))
+
 ## [1.10.0](https://github.com/folke/edgy.nvim/compare/v1.9.1...v1.10.0) (2024-07-07)
 
 
