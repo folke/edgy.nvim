@@ -191,15 +191,14 @@ function M:winbar()
   end
 
   parts[#parts + 1] = "%#" .. icon_hl .. "#" .. icon .. "%*%<"
-  parts[#parts + 1] = "%#EdgyTitle# " .. self.view.title .. "%*"
+  parts[#parts + 1] = "%#EdgyTitle# " .. self.view.get_title() .. "%*"
   parts[#parts + 1] = "%T"
 
   return table.concat(parts)
 end
 
 function M:needs_resize()
-  return self.width ~= vim.api.nvim_win_get_width(self.win)
-    or self.height ~= vim.api.nvim_win_get_height(self.win)
+  return self.width ~= vim.api.nvim_win_get_width(self.win) or self.height ~= vim.api.nvim_win_get_height(self.win)
 end
 
 -- Resize the given dimension by the given amount

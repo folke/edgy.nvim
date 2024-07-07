@@ -1,6 +1,6 @@
-local View = require("edgy.view")
-local Util = require("edgy.util")
 local Editor = require("edgy.editor")
+local Util = require("edgy.util")
+local View = require("edgy.view")
 
 ---@class Edgy.Edgebar.Opts
 ---@field views (Edgy.View.Opts|string)[]
@@ -157,7 +157,7 @@ function M:update(wins)
   -- check if the layout changed
   for _, view in ipairs(self.views) do
     if not vim.deep_equal(current[view], view.wins) then
-      -- dd(view.title, vim.tbl_map(tostring, view.wins), vim.tbl_map(tostring, current[view]))
+      -- dd(view.get_title(), vim.tbl_map(tostring, view.wins), vim.tbl_map(tostring, current[view]))
       -- vim.notify(before .. "\n---\n" .. tostring(self))
       return true
     end
@@ -209,12 +209,7 @@ function M:layout()
     end
     -- move other windows to the end of the edgebar
     if last then
-      local ok, err = pcall(
-        vim.fn.win_splitmove,
-        w.win,
-        last,
-        { vertical = not self.vertical, rightbelow = true }
-      )
+      local ok, err = pcall(vim.fn.win_splitmove, w.win, last, { vertical = not self.vertical, rightbelow = true })
       if not ok then
         error("Edgy: Failed to layout windows.\n" .. err .. "\n" .. vim.inspect({
           win = vim.bo[vim.api.nvim_win_get_buf(w.win)].ft,
@@ -250,8 +245,7 @@ function M:resize()
       local size = M.size(win:dim(short) or 0, self.vertical and vim.o.columns or vim.o.lines)
       self.bounds[short] = math.max(self.bounds[short], size)
     end
-    local size = self.vertical and vim.api.nvim_win_get_height(win.win)
-      or vim.api.nvim_win_get_width(win.win)
+    local size = self.vertical and vim.api.nvim_win_get_height(win.win) or vim.api.nvim_win_get_width(win.win)
     self.bounds[long] = self.bounds[long] + size
   end
 
@@ -280,9 +274,9 @@ function M:resize()
     elseif self.vertical then
       win[long] = 1
     else
-      local title_width = vim.fn.strdisplaywidth(win.view.title)
+      local title_width = vim.fn.strdisplaywidth(win.view.get_title())
       -- if vim.api.nvim_eval_statusline then
-      --   title_width = vim.api.nvim_eval_statusline(win.view.title, {
+      --   title_width = vim.api.nvim_eval_statusline(win.view.get_title(), {
       --     use_winbar = true,
       --     winid = win.win,
       --   }).width
