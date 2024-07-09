@@ -179,15 +179,16 @@ vim.opt.splitkeep = "screen"
 
 ### 👁️ `Edgy.View.Opts`
 
-| **Property** | **Type**                       | **Description**                                                                                             |
-| ------------ | ------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| **ft**       | `string`                       | File type of the view                                                                                       |
-| **filter**   | `fun(buf:buffer, win:window)?` | Optional function to filter buffers and windows                                                             |
-| **title**    | `string?`                      | Optional title of the view. Defaults to the capitalized filetype                                            |
-| **size**     | `number` or `fun():number`     | Size of the short edge of the edgebar. For edgebars, this is the minimum width. For panels, minimum height. |
-| **pinned**   | `boolean?`                     | If true, the view will always be shown in the edgebar even when it has no windows                           |
-| **open**     | `fun()` or `string`            | Function or command to open a pinned view                                                                   |
-| **wo**       | `vim.wo?`                      | View-specific window options                                                                                |
+| **Property**  | **Type**                       | **Description**                                                                                             |
+| --------------| ------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| **ft**        | `string`                       | File type of the view                                                                                       |
+| **filter**    | `fun(buf:buffer, win:window)?` | Optional function to filter buffers and windows                                                             |
+| **title**     | `string?` or `fun():string`    | Optional title of the view. Defaults to the capitalized filetype                                            |
+| **size**      | `number` or `fun():number`     | Size of the short edge of the edgebar. For edgebars, this is the minimum width. For panels, minimum height. |
+| **pinned**    | `boolean?`                     | If true, the view will always be shown in the edgebar even when it has no windows                           |
+| **collapsed** | `boolean?`                     | If true, the view will be initially closed/collapsed in the edgebar                                         |
+| **open**      | `fun()` or `string`            | Function or command to open a pinned view                                                                   |
+| **wo**        | `vim.wo?`                      | View-specific window options                                                                                |
 
 ## 🚀 Usage
 
@@ -273,6 +274,7 @@ in your layout.
           return vim.b[buf].neo_tree_source == "git_status"
         end,
         pinned = true,
+        collapsed = true, -- show window as closed/collapsed on start
         open = "Neotree position=right git_status",
       },
       {
@@ -282,12 +284,18 @@ in your layout.
           return vim.b[buf].neo_tree_source == "buffers"
         end,
         pinned = true,
+        collapsed = true, -- show window as closed/collapsed on start
         open = "Neotree position=top buffers",
       },
       {
+        title = function()
+          local buf_name = vim.api.nvim_buf_get_name(0) or "[No Name]"
+          return vim.fn.fnamemodify(buf_name, ":t")
+        end,
         ft = "Outline",
         pinned = true,
         open = "SymbolsOutlineOpen",
+        
       },
       -- any other neo-tree windows
       "neo-tree",
