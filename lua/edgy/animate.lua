@@ -106,6 +106,9 @@ function M.animate(step)
       local topline_min = math.max(view.lnum - height + 1, 1)
       local topline_max = view.lnum
       local topline = math.min(topline_max, math.max(topline_min, M.state[win].view.topline))
+      if topline > height then
+        topline = topline_max
+      end
       vim.fn.winrestview({ lnum = view.lnum, topline = topline })
     end)
   end
