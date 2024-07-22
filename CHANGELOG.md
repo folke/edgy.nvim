@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.2](https://github.com/folke/edgy.nvim/compare/v1.10.1...v1.10.2) (2024-07-22)
+
+
+### Bug Fixes
+
+* **animate:** prefer topline to be the max instead of min ([0e8bbab](https://github.com/folke/edgy.nvim/commit/0e8bbab4eba9dab6c237e4a2e146dc0466897be6))
+
 ## [1.10.1](https://github.com/folke/edgy.nvim/compare/v1.10.0...v1.10.1) (2024-07-07)
 
 
