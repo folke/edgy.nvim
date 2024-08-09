@@ -162,7 +162,7 @@ function M.is_floating(win)
   return vim.api.nvim_win_get_config(win).relative ~= ""
 end
 
----@param win? window
+---@param win integer? A window ID
 function M.get_win(win)
   win = win or vim.api.nvim_get_current_win()
   for _, edgebar in pairs(Config.layout) do
