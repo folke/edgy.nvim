@@ -235,8 +235,8 @@ in your layout.
         -- exclude floating windows and tabs
         filter = function(buf, win)
           local terms = require("toggleterm.terminal")
-          local _, term = terms.identify()
-          return vim.api.nvim_win_get_config(win).relative == "" or (term ~= nil and term.direction ~= "tab")
+          local _, term = terms.identify(vim.api.nvim_buf_get_name(buf))
+          return vim.api.nvim_win_get_config(win).relative == "" and (term ~= nil and term.direction ~= "tab")
         end,
       },
       {
