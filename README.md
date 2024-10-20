@@ -236,7 +236,7 @@ in your layout.
         filter = function(buf, win)
           local terms = require("toggleterm.terminal")
           local _, term = terms.identify()
-          return vim.api.nvim_win_get_config(win).relative == "" and term ~= nil and term.direction ~= "tab"
+          return vim.api.nvim_win_get_config(win).relative == "" or (term ~= nil and term.direction ~= "tab")
         end,
       },
       {
