@@ -232,9 +232,11 @@ in your layout.
       {
         ft = "toggleterm",
         size = { height = 0.4 },
-        -- exclude floating windows
+        -- exclude floating windows and tabs
         filter = function(buf, win)
-          return vim.api.nvim_win_get_config(win).relative == ""
+          local terms = require("toggleterm.terminal")
+          local _, term = terms.identify()
+          return vim.api.nvim_win_get_config(win).relative == "" and term ~= nil and term.direction ~= "tab"
         end,
       },
       {
