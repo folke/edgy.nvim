@@ -1,4 +1,4 @@
-*edgy.nvim.txt*             For Neovim             Last change: 2024 August 31
+*edgy.nvim.txt*             For Neovim            Last change: 2025 October 08
 
 ==============================================================================
 Table of Contents                                *edgy.nvim-table-of-contents*
@@ -53,7 +53,7 @@ INSTALLATION                                *edgy.nvim-edgy.nvim-installation*
 
 Install the plugin with your preferred package manager:
 
-lazy.nvim <https://github.com/folke/lazy.nvim>
+lazy.nvim <https://github.com/folke/lazy.nvim>:
 
 >lua
     {
@@ -64,7 +64,7 @@ lazy.nvim <https://github.com/folke/lazy.nvim>
 <
 
 
-  Ifyou’re not using **lazy.nvim**, make sure to call
+  If you’re not using **lazy.nvim**, make sure to call
   `require("edgy").setup(opts?)`.
 Recommended **Neovim** options:
 
