@@ -1,4 +1,4 @@
-*edgy.nvim.txt*             For Neovim            Last change: 2025 October 08
+*edgy.nvim.txt*                                                 edgy.nvim docs
 
 ==============================================================================
 Table of Contents                                *edgy.nvim-table-of-contents*
