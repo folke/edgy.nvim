@@ -20,7 +20,9 @@ function M.setup()
   vim.api.nvim_create_autocmd("WinClosed", {
     group = group,
     nested = true,
-    callback = M.check_main,
+    callback = function()
+      vim.schedule(M.check_main)
+    end,
   })
 
   for _, win in ipairs(vim.api.nvim_list_wins()) do
